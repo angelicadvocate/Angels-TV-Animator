@@ -1,4 +1,4 @@
-# OBS-TV-Animator v0.8.6
+# Angels-TV-Animator v0.8.6
 
 > ⚠️ **This project is still in development and not production-ready.**
 
