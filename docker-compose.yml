@@ -21,7 +21,7 @@ services:
     container_name: angels-tv-animator
     restart: unless-stopped
     labels:
-      - "version=0.8.6"
+      - "version=0.9.5"
     ports:
       - "8080:8080"  # Main application (external:internal port mapping)
       - "8081:8081"  # Streamerbot WebSocket (external:internal port mapping)
