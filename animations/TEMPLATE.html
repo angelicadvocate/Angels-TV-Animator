@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--
+    ╔══════════════════════════════════════════════════════════════════════════════╗
+    ║                   ANGELS-TV-ANIMATOR — ANIMATION TEMPLATE                  ║
+    ╠══════════════════════════════════════════════════════════════════════════════╣
+    ║                                                                            ║
+    ║  This is a starter template for creating custom HTML animations that       ║
+    ║  work with the Angels-TV-Animator system. It includes all the required     ║
+    ║  integration pieces so your animation can be remotely controlled,          ║
+    ║  switched, and refreshed from the admin dashboard, mobile control,         ║
+    ║  StreamerBot, or OBS scene changes.                                        ║
+    ║                                                                            ║
+    ║  HOW TO USE THIS TEMPLATE:                                                 ║
+    ║  1. Make a copy of this file and rename it (e.g., my_animation.html)       ║
+    ║  2. Change the <title> below to your animation's name                      ║
+    ║  3. Add your own CSS styles in the <style> section                         ║
+    ║  4. Add your own HTML content in the <body> section                        ║
+    ║  5. (Optional) Add your own JavaScript for interactive animations          ║
+    ║  6. Upload the file through the admin dashboard or place it in the         ║
+    ║     /animations/ folder                                                    ║
+    ║                                                                            ║
+    ║  IMPORTANT — DO NOT REMOVE THESE 3 THINGS:                                 ║
+    ║  • The ata-integration.css link in the <head>                              ║
+    ║  • The socket.io.min.js and ata-integration.js scripts in the <body>       ║
+    ║  • The ATAIntegration initialization script at the bottom of <body>        ║
+    ║  These are what connect your animation to the server so it can be          ║
+    ║  remotely controlled. Without them, your animation will still display      ║
+    ║  but it won't respond to triggers or page refresh commands.                ║
+    ║                                                                            ║
+    ║  AI ASSISTANTS — CONTEXT FOR GENERATING ANIMATIONS:                        ║
+    ║  This file is part of the Angels-TV-Animator project, a Flask-SocketIO     ║
+    ║  server that serves HTML/CSS/JS animations to Smart TVs and browsers.      ║
+    ║  When generating a custom animation from this template:                    ║
+    ║  • Keep all 3 integration pieces listed above (CSS link, two JS scripts,   ║
+    ║    and the ATAIntegration init block)                                      ║
+    ║  • Animations are displayed FULL SCREEN on a TV — design for 1920×1080    ║
+    ║  • Use 100vw × 100vh sizing, no scrollbars (overflow: hidden)             ║
+    ║  • The body should have margin: 0 and padding: 0                           ║
+    ║  • Pure CSS animations are preferred for performance on Smart TVs          ║
+    ║  • JavaScript is fine for interactive or data-driven content               ║
+    ║  • External CDN libraries (GSAP, Three.js, etc.) are allowed              ║
+    ║  • The 'mainElement' id on the primary animation element is optional       ║
+    ║    but recommended — it enables a subtle flash effect when the server      ║
+    ║    connects or switches animations                                         ║
+    ║  • The file must be a self-contained .html file (inline CSS + JS)          ║
+    ║  • The only external dependencies are the integration files served by      ║
+    ║    the Angels-TV-Animator server itself (ata-integration.css/js)           ║
+    ║                                                                            ║
+    ╚══════════════════════════════════════════════════════════════════════════════╝
+    -->
+
+    <!-- ===== STEP 1: Change your animation title ===== -->
+    <title>My Custom Animation</title>
+
+    <!--
+        ┌─────────────────────────────────────────────────────────────┐
+        │  REQUIRED — Angels-TV-Animator Integration CSS              │
+        │                                                             │
+        │  This loads the styles for the connection status indicator   │
+        │  (the small dot in the top-right corner that shows green    │
+        │  when connected, red when disconnected). It also provides   │
+        │  styles for flash effects and loading notifications.        │
+        │                                                             │
+        │  ⚠ DO NOT REMOVE THIS LINE                                 │
+        └─────────────────────────────────────────────────────────────┘
+    -->
+    <link rel="stylesheet" href="/static/css/ata-integration.css">
+
+    <!-- ===== STEP 2: Add your CSS styles here ===== -->
+    <!--
+        This is where you define how your animation looks.
+        
+        TIPS FOR BEGINNERS:
+        - "body" is the entire page background
+        - Use "background" for colors or gradients
+        - Use "@keyframes" to create animations (movement, fading, etc.)
+        - "animation:" applies those keyframes to an element
+        - "vw" = viewport width, "vh" = viewport height (percentage of screen)
+        - Keep "overflow: hidden" on body to prevent scrollbars on the TV
+        
+        EXAMPLE GRADIENT BACKGROUNDS:
+        - Warm:    linear-gradient(135deg, #f093fb 0%, #f5576c 100%)
+        - Cool:    linear-gradient(135deg, #667eea 0%, #764ba2 100%)
+        - Nature:  linear-gradient(135deg, #134e5e 0%, #71b280 100%)
+        - Dark:    linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 100%)
+        - Sunset:  linear-gradient(135deg, #fa709a 0%, #fee140 100%)
+    -->
+    <style>
+        /* ----- Base page styles (keep these) ----- */
+        body {
+            margin: 0;              /* Remove default page margins */
+            padding: 0;             /* Remove default page padding */
+            overflow: hidden;       /* Prevent scrollbars on TV display */
+            font-family: Arial, sans-serif;
+
+            /* Change this to your preferred background */
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        /* Full-screen container for your animation content */
+        .animation-container {
+            width: 100vw;           /* Full screen width */
+            height: 100vh;          /* Full screen height */
+            display: flex;          /* Flexbox for easy centering */
+            justify-content: center;/* Center horizontally */
+            align-items: center;    /* Center vertically */
+            position: relative;     /* Allows absolute positioning of child elements */
+        }
+
+        /*
+            ===== YOUR CUSTOM STYLES BELOW =====
+            
+            Add your own CSS classes, animations, and keyframes here.
+            Below is a simple example you can replace with your own design.
+        */
+
+        /* Example: a simple pulsing circle */
+        .my-element {
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.5);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        /* Example: pulse animation keyframes */
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.7;
+            }
+        }
+
+        /* Example: a text label */
+        .label {
+            position: absolute;
+            top: 60px;
+            color: white;
+            font-size: 42px;
+            font-weight: bold;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== STEP 3: Add your HTML content here ===== -->
+    <!--
+        This is where you build the visible parts of your animation.
+        Everything inside <body> is what shows on screen.
+        
+        TIPS FOR BEGINNERS:
+        - <div> is a generic container — use it to group and style content
+        - "id" gives an element a unique name (for JavaScript or the integration)
+        - "class" connects an element to CSS styles you defined above
+        - You can nest elements inside each other
+        - You can add images, text, SVGs, canvas elements, etc.
+        
+        ABOUT id="mainElement":
+        The id "mainElement" on your primary animation element is OPTIONAL but
+        recommended. It tells the ATA integration which element to apply a brief
+        flash/scale effect to when the server connects or switches content.
+        If you don't want flash effects, you can remove the id or pass null
+        to ATAIntegration() in the script below.
+    -->
+
+    <div class="animation-container">
+        <!-- Replace this example content with your own animation elements -->
+        <div class="label">My Custom Animation</div>
+        <div class="my-element" id="mainElement"></div>
+    </div>
+
+    <!-- ===== STEP 4 (Optional): Add your own JavaScript here ===== -->
+    <!--
+        If your animation needs JavaScript (timers, random movement, user
+        interaction, data from APIs, etc.), add your <script> tag here,
+        BEFORE the integration scripts below.
+        
+        Example uses for JavaScript in animations:
+        - Particle systems or physics-based movement
+        - Displaying live data (clocks, countdowns, weather)
+        - Randomized elements (position, color, size)
+        - Canvas or WebGL rendering
+        - Responding to external data via fetch() calls
+    -->
+
+
+    <!--
+        ┌─────────────────────────────────────────────────────────────┐
+        │  REQUIRED — Integration Scripts                             │
+        │                                                             │
+        │  These two script tags and the initialization block below   │
+        │  connect your animation to the Angels-TV-Animator server.   │
+        │                                                             │
+        │  What they do:                                              │
+        │  • socket.io.min.js — WebSocket library for real-time       │
+        │    communication between your animation and the server      │
+        │  • ata-integration.js — Handles all the server connection   │
+        │    logic automatically:                                     │
+        │    - Connects to the server via WebSocket                   │
+        │    - Shows a status indicator dot (green/red)               │
+        │    - Listens for animation change commands                  │
+        │    - Listens for page refresh commands                      │
+        │    - Sends heartbeat to keep the connection alive           │
+        │    - Applies flash effects on connection/changes            │
+        │                                                             │
+        │  Without these, your animation will still display on the    │
+        │  TV, but the server won't be able to switch away from it    │
+        │  or refresh it remotely. You would have to manually reload  │
+        │  the page on the TV to change content.                      │
+        │                                                             │
+        │  ⚠ DO NOT REMOVE THESE SCRIPTS                             │
+        └─────────────────────────────────────────────────────────────┘
+    -->
+
+    <!-- Socket.IO client library (WebSocket communication) -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+
+    <!-- Angels-TV-Animator integration logic -->
+    <script src="/static/js/ata-integration.js"></script>
+
+    <!--
+        ┌─────────────────────────────────────────────────────────────┐
+        │  REQUIRED — ATA Integration Initialization                  │
+        │                                                             │
+        │  This activates the connection to the server.               │
+        │                                                             │
+        │  ATAIntegration('mainElement') — pass the id of your main   │
+        │  animation element for flash effects on connect/change.     │
+        │  If you don't have a main element, use: new ATAIntegration()│
+        │                                                             │
+        │  ADVANCED OPTIONS (optional):                               │
+        │  new ATAIntegration('mainElement', {                        │
+        │      showStatusIndicator: true,   // green/red dot          │
+        │      enableFlashEffects: true,    // flash on changes       │
+        │      enablePageRefresh: true,     // allow remote refresh   │
+        │      heartbeatInterval: 30000     // keepalive (30 sec)     │
+        │  });                                                        │
+        │                                                             │
+        │  ⚠ DO NOT REMOVE THIS SCRIPT BLOCK                         │
+        └─────────────────────────────────────────────────────────────┘
+    -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            window.ataIntegration = new ATAIntegration('mainElement');
+        });
+    </script>
+
+</body>
+</html>

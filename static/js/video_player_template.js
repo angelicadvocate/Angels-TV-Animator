@@ -173,10 +173,10 @@ class VideoPlayer {
     
     updateStatus(message, connected) {
         // Update tooltip with message, but no visible text
-        this.statusIndicator.title = `OTA: ${message}`;
+        this.statusIndicator.title = `ATA: ${message}`;
         this.statusIndicator.className = connected ? 
-            'ota-status-indicator connected' : 
-            'ota-status-indicator disconnected';
+            'ata-status-indicator connected' : 
+            'ata-status-indicator disconnected';
     }
     
     showLoading(show) {

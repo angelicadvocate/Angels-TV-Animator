@@ -164,8 +164,8 @@ class FileManager {
                     <button class="action-btn streamerbot-btn" onclick="fileManager.copyStreamerbotCS('${file.name}')" title="Copy StreamerBot C# code to clipboard">
                         <i class="fa-solid fa-code"></i> StreamerBot C#
                     </button>
-                    <button class="action-btn streamerbot-btn" onclick="fileManager.copyStreamerbotHTTP('${file.name}')" title="Copy StreamerBot HTTP URL to clipboard">
-                        <i class="fa-solid fa-link"></i> StreamerBot HTTP
+                    <button class="action-btn streamerbot-btn" onclick="fileManager.copyStreamerbotHTTP('${file.name}')" title="Copy HTTP trigger URL to clipboard">
+                        <i class="fa-solid fa-link"></i> HTTP Trigger
                     </button>
                 </div>
             </div>
@@ -258,7 +258,7 @@ public class CPHInline
             {
                 client.Timeout = TimeSpan.FromSeconds(5);
                 
-                var url = "http://localhost:8080/trigger";
+                var url = "${window.location.origin}/trigger";
                 var json = "{\\"animation\\":\\"${filename}\\"}";
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -291,8 +291,8 @@ public class CPHInline
     }
     
     copyStreamerbotHTTP(filename) {
-        const httpUrl = `http://localhost:8080/trigger?animation=${filename}`;
-        this.copyToClipboard(httpUrl, `StreamerBot HTTP URL for ${filename}`);
+        const httpUrl = `${window.location.origin}/trigger?animation=${filename}`;
+        this.copyToClipboard(httpUrl, `HTTP trigger URL for ${filename}`);
     }
     
     copyToClipboard(text, description) {

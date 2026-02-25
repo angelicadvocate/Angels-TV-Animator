@@ -1,59 +1,15 @@
 
 # Angels-TV-Animator TODO List
 
-## Priority: High (Security & Production Ready)
-
-- [ ] **Add API Rate Limiting & Input Validation**
-  - Implement Flask-Limiter for API endpoint protection against abuse
-  - Add proper request validation for all API endpoints (file uploads, user management, triggers)
-  - Consider using marshmallow or pydantic for schema validation
-  - **Security Risk**: Current API endpoints have no protection against malicious requests
-
 ## Priority: Medium (Integration & Features)
 
-- [ ] **Implement Proper Logging Framework**
-  - Replace print statements with Python logging module
-  - Add rotating file handler for log management
-  - Implement log levels (DEBUG, INFO, WARNING, ERROR)
-  - **Benefits**: Better debugging, production monitoring, troubleshooting support
-  - **Current Issue**: Print statements make production debugging difficult
-
 - [ ] **Add Configuration Management System**
-  - Create proper `config.py` with environment-based configurations
+  - *(Partially addressed: `config.py` module created during modular refactor with centralized constants/paths)*
   - Use environment variables for sensitive data (ports, secrets, OBS passwords)
   - Consider `python-dotenv` for local development configuration
   - **Benefits**: Better deployment flexibility, security, environment separation
 
-- [ ] **OBS Connection Stability Monitoring**
-  - Monitor OBS WebSocket connection logs over extended periods
-  - Identify patterns in connection drops (time-based, activity-based, etc.)
-  - Document frequency and triggers for disconnection events
-  - Analyze logs for specific error patterns or OBS Studio behavior
-  - Consider implementing connection health metrics/dashboard
-  - **Current Status**: Max retry attempts increased to 20, basic monitoring in place
-  - **Goal**: Determine if disconnects are random, time-based, or triggered by specific OBS actions
-
-- [ ] **Refactor app.py into Modular Components** 
-  - **PLANNING REQUIRED**: Analyze current app.py structure and identify logical separation points
-  - **Primary Candidates for Extraction**:
-    - **OBS Integration Module** (`obs_manager.py`): OBSWebSocketClient class, scene list management, connection handling
-    - **Scene Watcher Module** (`scene_watcher.py`): OBSSceneWatcher class, file monitoring, animation triggering
-    - **Authentication Module** (`auth_manager.py`): User management, login/logout, decorators
-    - **Media Management Module** (`media_manager.py`): File operations, thumbnail generation, media discovery
-    - **WebSocket Handler Module** (`websocket_handlers.py`): SocketIO event handlers, client management
-  - **Benefits**: Improved maintainability, easier testing, cleaner separation of concerns
-  - **Considerations**: Maintain existing functionality, minimize import circular dependencies
-  - **Approach**: Create detailed refactoring plan before implementation to avoid breaking changes
-  - **Current Status**: app.py is ~3300 lines - needs strategic modularization
-
 ## Priority: Low (Code Organization & Cleanup)
-
-- [ ] **Fix development server initialization**
-  - The dev_local.py file needs proper fix for automation initialization with Flask reloader
-  - Currently causing double initialization issues during development
-  - A backup copy of the original working dev_local.py is saved in the local VS-Code directory for reference
-  - Current version works adequately for development but needs improvement for future use
-  - The reloader detection approach didn't resolve the issue properly
 
 - [ ] **Create Reusable Header Template for Admin Pages**
   - Extract common header structure from admin templates into `templates/partials/admin_header.html`
@@ -78,17 +34,6 @@
   - Align suggestions with expanded starter animation library after more animations are built
   - Consider event-specific animations (follow celebrations, donation displays, raid entrances, etc.)
 
-- [ ] **Add StreamerBot Sample Integrations section with import strings**
-  - Must be done after starter animation templates are complete
-  - Import string must be generated in streamerbot
-  - Create "Sample Integrations" section in StreamerBot integration page
-  - Add copy-to-clipboard StreamerBot import string for instant setup examples
-  - Include pre-configured actions for common events (Follow, Donation, Raid, Subscribe)
-  - Actions should reference the base animations that ship with the project
-  - Users can click "Import Actions" in StreamerBot and paste the JSON for instant working examples
-  - Provide both C# WebSocket and HTTP Fetch URL action examples
-  - Include proper trigger configurations and sub-action setup in the import data
-
 ## Priority: Low (Animation Template Ideas)
 
 - [ ] **Subscriber celebration with profile image integration**
@@ -105,39 +50,13 @@
   - Technical difficulties holding screen
   - New follower celebration burst animation
 
-## Priority: Low (Additional Features)
-
-- [ ] **Add Comprehensive Health Monitoring**
-  - Create detailed health check endpoint with OBS connection, WebSocket client count, disk usage
-  - Add system resource monitoring (memory, CPU usage)
-  - Implement automatic config backup system with timestamps
-  - **Benefits**: Better production monitoring, easier troubleshooting, data protection
-
 ## Priority: Optional (Potential Improvements)
-
-- [ ] **Database Migration Path**
-  - **Potential Upgrade**: Migrate from JSON user storage to SQLite database
-  - **Benefits**: Proper user sessions, permissions, audit logs, user roles, API keys
-  - **Consideration**: Current JSON system works fine for small-scale deployments
-  - **Future Value**: Would enable enterprise features and better scalability
 
 - [ ] **Plugin/Extension System**
   - **Potential Feature**: Allow users to drop in custom animation templates
   - **Advanced**: Template marketplace or community sharing system
   - **Technical**: Custom WebSocket event handlers, plugin API
   - **Market Potential**: Could enable community-driven content ecosystem
-
-- [ ] **Analytics & Usage Insights**
-  - **Potential Feature**: Track animation usage statistics and scene change patterns
-  - **Value**: Help streamers optimize content, understand viewer engagement
-  - **Implementation**: Usage analytics dashboard, frequency analysis, A/B testing
-  - **Business Potential**: Premium analytics features for professional streamers
-
-- [ ] **Progressive Web App (PWA) Mobile Interface**
-  - **Potential Enhancement**: Make mobile interface installable as native app
-  - **Features**: Offline capability, push notifications, improved UX
-  - **Target**: Mobile users who want native app experience
-  - **Complexity**: Moderate - requires service worker, manifest, offline storage
 
 - [ ] **Advanced Integration Expansions**
   - **Potential Integrations**: Streamlabs, Discord bot, Twitch chat commands, MIDI controllers
@@ -340,7 +259,7 @@ Make sure to update version numbers as MAJOR.MINOR.PATCH as needed when todo ite
   - Updated admin instruction pages with consistent code block formatting
 
 - [x] **Refactor current HTML examples** ✨ *COMPLETED* - `github:AngelicAdvocate`
-  - Created modular OTA integration system with external CSS/JS files (ota-integration.css, ota-integration.js)
+  - Created modular ATA integration system with external CSS/JS files (ata-integration.css, ata-integration.js)
   - Refactored test_anim1.html and test_brb.html to use external integration files
   - Implemented reusable WebSocket integration class with auto-initialization
   - Standardized overlay components with status indicators, connection handling, and page refresh
@@ -364,7 +283,7 @@ Make sure to update version numbers as MAJOR.MINOR.PATCH as needed when todo ite
 
   ## 🚀 **MAJOR PROGRESS - October 24, 2025** ✨ *RECENTLY COMPLETED*
 
-  - [x] **Add OBS WebSocket Client Integration** ✨ *COMPLETED* v0.8.6 → v0.9.0 - `github:AngelicAdvocate`
+  - [x] **Add OBS WebSocket Client Integration** ✨ *COMPLETED* v0.8.6 → v0.8.7 - `github:AngelicAdvocate`
   - Researched and implemented `obs-websocket-py` library integration
   - Added OBS WebSocket client functionality to Flask server with persistent connection monitoring
   - Enabled bidirectional OBS communication (scene detection, control commands, status monitoring)
@@ -378,7 +297,7 @@ Make sure to update version numbers as MAJOR.MINOR.PATCH as needed when todo ite
 
 ## 🚀 **MAJOR PROGRESS - October 25, 2025** ✨ *RECENTLY COMPLETED*
 
-- [x] **OBS Real-Time Performance Optimization** ✨ *COMPLETED* **v0.9.1** - `github:AngelicAdvocate`
+- [x] **OBS Real-Time Performance Optimization** ✨ *COMPLETED* **v0.8.8** - `github:AngelicAdvocate`
   - **CRITICAL FIX**: Eliminated 40+ second delays in scene change processing
   - Identified hanging `get_scene_list()` API calls blocking the entire pipeline
   - Removed blocking operations from real-time scene change handlers
@@ -386,7 +305,7 @@ Make sure to update version numbers as MAJOR.MINOR.PATCH as needed when todo ite
   - Separated real-time events from slow API operations
   - Scene changes now process instantly: Detection → Storage → Animation trigger
 
-- [x] **OBS WebSocket Connection Persistence** ✨ *COMPLETED* **v0.9.2** - `github:AngelicAdvocate`
+- [x] **OBS WebSocket Connection Persistence** ✨ *COMPLETED* **v0.8.9** - `github:AngelicAdvocate`
   - Implemented bulletproof OBS connection with persistent reconnection
   - Enhanced connection monitoring with 20 max retry attempts (doubled from 10)
   - Added exponential backoff with 30-second maximum retry intervals
@@ -401,7 +320,7 @@ Make sure to update version numbers as MAJOR.MINOR.PATCH as needed when todo ite
   - Implemented atomic file operations with cleanup and error recovery
   - Optimized storage operations for minimal overhead and maximum speed
 
-- [x] **Automated Animation Triggering System** ✨ *COMPLETED* **v0.9.3** - `github:AngelicAdvocate`
+- [x] **Automated Animation Triggering System** ✨ *COMPLETED* **v0.8.10** - `github:AngelicAdvocate`
   - **NEW FEATURE**: Created OBSSceneWatcher class for automatic animation triggering
   - Implemented file-based monitoring system watching `obs_current_scene.json`
   - Built scene-to-animation mapping system using `obs_mappings.json`
@@ -409,7 +328,7 @@ Make sure to update version numbers as MAJOR.MINOR.PATCH as needed when todo ite
   - Integrated with existing dashboard trigger logic for consistency
   - Automated workflow: OBS Scene Change → File Update → Animation Trigger → TV Display
 
-- [x] **API Authentication & Error Handling Fixes** ✨ *COMPLETED* **v0.9.4** - `github:AngelicAdvocate`
+- [x] **API Authentication & Error Handling Fixes** ✨ *COMPLETED* **v0.8.11** - `github:AngelicAdvocate`
   - **CRITICAL FIX**: Resolved "Unexpected token '<', "<!DOCTYPE" JSON parsing errors
   - Created `@api_admin_required` decorator for proper API authentication
   - Fixed admin dashboard status loading with proper JSON error responses
@@ -419,7 +338,7 @@ Make sure to update version numbers as MAJOR.MINOR.PATCH as needed when todo ite
 
 ## 🚀 **MAJOR PROGRESS - October 26, 2025** ✨ *RECENTLY COMPLETED*
 
-- [x] **Fixed OBS Automation SocketIO Refresh Issue** ✨ *COMPLETED* **v0.9.5** - `github:AngelicAdvocate`
+- [x] **Fixed OBS Automation SocketIO Refresh Issue** ✨ *COMPLETED* **v0.8.12** - `github:AngelicAdvocate`
   - **CRITICAL FIX**: Resolved TV display not refreshing on automatic scene changes
   - **PROBLEM**: OBSSceneWatcher was calling `/trigger` route via HTTP, but SocketIO emissions weren't reaching TV clients
   - **SOLUTION**: Modified OBSSceneWatcher to emit SocketIO commands directly instead of HTTP requests
@@ -427,7 +346,7 @@ Make sure to update version numbers as MAJOR.MINOR.PATCH as needed when todo ite
   - All automation working perfectly: HTML animations + videos switching seamlessly
   - Complete end-to-end automation: OBS → Backend → TV Display (bulletproof)
 
-- [x] **Removed Hardcoded Port References** ✨ *COMPLETED* **v0.9.6** - `github:AngelicAdvocate`
+- [x] **Removed Hardcoded Port References** ✨ *COMPLETED* **v0.8.13** - `github:AngelicAdvocate`
   - Added `get_current_port()` function for dynamic port detection
   - Fixed all hardcoded 5000/8080 references in OBSSceneWatcher and thumbnail service calls
   - System now properly adapts to development (5000) vs production (MAIN_PORT) environments
@@ -453,9 +372,20 @@ Make sure to update version numbers as MAJOR.MINOR.PATCH as needed when todo ite
   - Working file watcher system for automated animation changes
   - Integrated with existing animation trigger system (same logic as manual triggers)
 
+  - [x] **Add StreamerBot Sample Integrations section with import strings** ✨ *COMPLETED* - `github:AngelicAdvocate`
+  - Must be done after starter animation templates are complete
+  - Import string must be generated in streamerbot
+  - Create "Sample Integrations" section in StreamerBot integration page
+  - Add copy-to-clipboard StreamerBot import string for instant setup examples
+  - Include pre-configured actions for common events (Follow, Donation, Raid, Subscribe)
+  - Actions should reference the base animations that ship with the project
+  - Users can click "Import Actions" in StreamerBot and paste the JSON for instant working examples
+  - Provide both C# WebSocket and HTTP Fetch URL action examples
+  - Include proper trigger configurations and sub-action setup in the import data
+
 ## 🚀 **MAJOR PROGRESS - February 25, 2026** ✨ *RECENTLY COMPLETED*
 
-- [x] **Password Security Implementation** ✨ *COMPLETED* **v0.8.6 → v0.9.0** - `github:AngelicAdvocate`
+- [x] **Password Security Implementation** ✨ *COMPLETED* **v0.8.13 → v0.9.0** - `github:AngelicAdvocate`
   - **CRITICAL SECURITY FIX**: Replaced plain text password storage with industry-standard PBKDF2-SHA256 hashing
   - Implemented `werkzeug.security.generate_password_hash` and `check_password_hash` for all password operations
   - Added automatic migration system for existing plain text passwords to hashed format on first login
@@ -470,10 +400,93 @@ Make sure to update version numbers as MAJOR.MINOR.PATCH as needed when todo ite
     - Documented password security, network security, and firewall configuration best practices
   - **Benefits**: Essential for production deployment, protects user credentials, follows industry security standards
   - **Migration**: Existing users with plain text passwords will be automatically migrated to hashed versions on next login
-  - **Version Bump**: 0.8.6 → 0.9.0 (MINOR version increment for security feature addition)
+  - **Version Bump**: 0.8.13 → 0.9.0 (MINOR version increment for security feature addition)
 
 - [x] **Fix production deployment issues** ✨ *COMPLETED* **v0.9.0** - `github:AngelicAdvocate`
   - Use eventlet or gevent, remove 'allow_unsafe_werkzeug=True' from app.py
   - Replace development Flask server with proper production WSGI server (gunicorn)
   - Update Docker configuration for production deployment
   - **Resolution**: Added eventlet as async_mode for Flask-SocketIO, removed allow_unsafe_werkzeug flag, added eventlet==0.35.2 to requirements.txt, cleaned up duplicate startup block, fixed user initialization format with proper password hashing
+
+- [x] **Refactor app.py into Modular Components** ✨ *COMPLETED* **v0.9.1** **February 25, 2026** - `github:AngelicAdvocate`
+  - Extracted monolithic 3266-line `app.py` into 14 focused modules (93% reduction → 228 lines)
+  - **Modules Created**:
+    - `config.py` — Constants, paths, ports (35 lines)
+    - `extensions.py` — Flask app, SocketIO, LoginManager instances (25 lines)
+    - `auth_manager.py` — User model, auth decorators, user CRUD (136 lines)
+    - `media_manager.py` — State persistence, file utilities, broadcast helper (155 lines)
+    - `device_tracking.py` — Connected device tracking and aggregation (67 lines)
+    - `obs_manager.py` — OBSWebSocketClient class (486 lines)
+    - `scene_watcher.py` — TriggerFileWatcher + OBSSceneWatcher (235 lines)
+    - `websocket_server.py` — RawWebSocketServer for StreamerBot (159 lines)
+    - `websocket_handlers.py` — All SocketIO event handlers (263 lines)
+    - `routes/__init__.py` — Blueprint registration (14 lines)
+    - `routes/public.py` — Public routes blueprint (245 lines)
+    - `routes/admin.py` — Admin pages + API blueprint (790 lines)
+    - `routes/obs_api.py` — OBS API routes blueprint (481 lines)
+  - Uses Flask Blueprints for route organization, `extensions.py` pattern for circular import avoidance
+  - Updated `url_for()` references in templates and decorators for blueprint prefixes
+  - Updated `z_extras/dev_local.py` for new modular import structure
+
+- [x] **OBS Connection Stability Monitoring** ✨ *COMPLETED* **February 25, 2026** - `github:AngelicAdvocate`
+  - Monitor OBS WebSocket connection logs over extended periods
+  - Identify patterns in connection drops (time-based, activity-based, etc.)
+  - Document frequency and triggers for disconnection events
+  - Analyze logs for specific error patterns or OBS Studio behavior
+  - Consider implementing connection health metrics/dashboard
+  - **Current Status**: Max retry attempts increased to 20, basic monitoring in place
+  - **Goal**: Determine if disconnects are random, time-based, or triggered by specific OBS actions
+  - **UPDATE** Extended monitoring shows no frequent disconnects. Possible bug was fixed before?
+  - **NOTE** Continued monitoring during further development recomended.
+
+- [x] **Edit Health Monitoring** ✨ *COMPLETED* **v0.9.2** **February 25, 2026** - `github:AngelicAdvocate`
+  - Enhanced `/health` endpoint with version, current media, connected clients (TV/admin/StreamerBot), OBS connection status, disk usage, and uptime
+  - Added health endpoint reference to README.md web interfaces list
+  - Added comprehensive health check FAQ entry to troubleshooting page with example response and field descriptions
+
+- [x] **Simplify Development Server (dev_local.py)** ✨ *COMPLETED* **v0.9.2** **February 25, 2026** - `github:AngelicAdvocate`
+  - Rewrote `z_extras/dev_local.py` as a minimal frontend-focused dev server (~95 lines, down from 132)
+  - Removed all OBS, scene watcher, file trigger watcher, and raw WebSocket initialization (use Docker for full-stack)
+  - Added `eventlet.monkey_patch()` at top to match production `app.py` behavior
+  - Added missing `register_routes(app)` call so Blueprint routes actually work
+  - Added missing `auth_manager` and `websocket_handlers` imports for login and SocketIO events
+  - Removed `allow_unsafe_werkzeug=True` (no longer needed with eventlet)
+  - Updated `z_extras/DEVELOPMENT.md` to reflect frontend-only scope and recommend Docker for backend work
+
+- [x] **Update Animation Files & ATA Integration Rename** ✨ *COMPLETED* **v0.9.3** **February 25, 2026** - `github:AngelicAdvocate`
+  - Converted `anim2.html` from inline SmartAnimation class to clean ATA integration pattern (286 → 109 lines)
+  - Converted `anim3.html` from inline SmartAnimation class to clean ATA integration pattern (279 → 102 lines)
+  - Renamed all OTA (Over-The-Air) references to ATA (Angels-TV-Animator) across 12 files for branding consistency
+  - Renamed CSS classes: `ota-status-indicator` → `ata-status-indicator`, `ota-flash-animation` → `ata-flash-animation`, etc.
+  - Renamed JS class: `OTAIntegration` → `ATAIntegration`, variable: `window.otaIntegration` → `window.ataIntegration`
+  - Renamed files: `ota-integration.css` → `ata-integration.css`, `ota-integration.js` → `ata-integration.js`
+  - Updated all animation files (`anim1-3.html`, `brb.html`), video player template, admin instructions, and startup messages
+  - Created `animations/TEMPLATE.html` — comprehensive animation starter template (~261 lines) with:
+    - ASCII-art header and step-by-step workflow for beginners and non-web-developers
+    - "DO NOT REMOVE" warnings on 3 required ATA integration pieces (CSS link, scripts, JS init)
+    - Beginner tips for CSS/HTML customization with gradient examples
+    - AI context block explaining project architecture for AI-assisted animation generation
+    - Working pulsing circle example animation as starting point
+  - **Version Bump**: 0.9.2 → 0.9.3 (animation standardization and branding consistency)
+
+- [x] **Add Basic Input Validation & Upload Safety** ✨ *COMPLETED* **v0.9.4** **February 25, 2026** - `github:AngelicAdvocate`
+  - Added `MAX_CONTENT_LENGTH` (500MB) to Flask config via `MAX_UPLOAD_SIZE_MB` constant in `config.py`
+  - Prevents oversized uploads from consuming all container memory/disk
+  - Added `secure_filename()` from Werkzeug to file upload handler to sanitize filenames
+  - Prevents path traversal characters and invalid filename exploits
+  - **Skipped** Flask-Limiter rate limiting — unnecessary for local-network-only deployment
+  - **Skipped** marshmallow/pydantic schema validation — existing manual validation is sufficient for project scope
+  - **Already in place**: File extension validation, username/password length checks, empty field checks, auth decorators
+
+- [x] **Implement Proper Logging Framework** ✨ *COMPLETED* **v0.9.5** **February 25, 2026** - `github:AngelicAdvocate`
+  - Created `setup_logging()` in `config.py` with `RotatingFileHandler` (5 MB, 3 backups) + `StreamHandler`
+  - Log file: `data/logs/ata.log`, configurable via `LOG_LEVEL` env var (default: INFO)
+  - Format: `%(asctime)s  %(levelname)-8s  [%(name)s]  %(message)s`
+  - Converted **252 print statements → proper logger calls** across all 13 production files:
+    - `app.py` (68), `obs_manager.py` (79), `routes/obs_api.py` (37), `scene_watcher.py` (33)
+    - `websocket_handlers.py` (14), `websocket_server.py` (8), `routes/admin.py` (6)
+    - `auth_manager.py` (3), `routes/public.py` (2), `media_manager.py` (1), `device_tracking.py` (1)
+  - Quieted third-party loggers: `engineio`, `socketio`, `werkzeug` set to WARNING
+  - Each module uses `logger = logging.getLogger(__name__)` for namespaced output
+  - `thumbnail_service.py` already used logging — no changes needed
+  - **Version Bump**: 0.9.4 → 0.9.5 (proper logging framework)

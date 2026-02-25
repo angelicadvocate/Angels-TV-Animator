@@ -259,6 +259,60 @@ lsof -i :[PORT]</pre>
 docker exec -it Angels-TV-Animator cat /app/data/config/users.json</pre>
                         </div>
                     </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <i class="fa-solid fa-question-circle"></i>
+                            <strong>How to check if the server is running correctly</strong>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Angels-TV-Animator provides a built-in <strong>health check endpoint</strong> that returns detailed server status in JSON format. No login required.</p>
+
+                            <p><strong>Access it from any browser or terminal:</strong></p>
+                            <pre class="code-block">curl http://[YOUR_SERVER_IP]:8080/health</pre>
+
+                            <p><strong>Example response:</strong></p>
+                            <pre class="code-block">{
+  "status": "healthy",
+  "version": "0.9.0",
+  "media": {
+    "animations_available": 6,
+    "videos_available": 2,
+    "total_media_available": 8,
+    "currently_playing": "anim1.html"
+  },
+  "connections": {
+    "tv_clients": 1,
+    "admin_clients": 1,
+    "streamerbot_clients": 0,
+    "total_clients": 2
+  },
+  "obs": {
+    "configured": true,
+    "connected": false
+  },
+  "disk": {
+    "total_gb": 50.0,
+    "used_gb": 12.3,
+    "free_gb": 37.7,
+    "percent_used": 24.6
+  },
+  "uptime_seconds": 3600
+}</pre>
+
+                            <p><strong>What each section tells you:</strong></p>
+                            <ul>
+                                <li><strong>status:</strong> "healthy" means the server is running and responding</li>
+                                <li><strong>media:</strong> How many animations/videos are available and what's currently playing</li>
+                                <li><strong>connections:</strong> How many TVs, admin sessions, and StreamerBot clients are connected</li>
+                                <li><strong>obs:</strong> Whether OBS WebSocket is configured and currently connected</li>
+                                <li><strong>disk:</strong> Disk space on the server (useful for monitoring in Docker)</li>
+                                <li><strong>uptime_seconds:</strong> How long the server process has been running</li>
+                            </ul>
+
+                            <p><i class="fa-solid fa-lightbulb"></i> <strong>Tip:</strong> This endpoint is also used by Docker's built-in health check to monitor the container. If the health check fails, Docker will automatically flag the container as unhealthy.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 

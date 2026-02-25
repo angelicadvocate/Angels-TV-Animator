@@ -1,131 +1,95 @@
 #!/usr/bin/env python3
 """
 Local Development Server for Angels-TV-Animator
-Runs Flask directly on the host for maximum development speed with hot reload.
+================================================
+A lightweight dev server for frontend work (HTML, CSS, JS, templates).
+Provides hot reload without rebuilding Docker.
 
-This bypasses Docker for development to provide instant file change detection.
-Use this when actively developing frontend components (HTML, CSS, JS).
+NOTE: This is for FRONTEND DEVELOPMENT ONLY.
+OBS integration, scene watchers, file trigger watchers, and the raw
+WebSocket server are NOT started here. Use Docker for full-stack testing:
+    docker compose up -d --build
 
 Requirements:
-- Python 3.11+
-- pip install -r requirements.txt
+    Python 3.11+
+    pip install -r requirements.txt
 
-Usage:
-- All platforms: python z_extras/dev_local.py
+Usage (from project root):
+    python z_extras/dev_local.py
 """
+
+# CRITICAL: eventlet monkey patching must happen before any other imports
+# (matches production app.py behavior)
+import eventlet
+eventlet.monkey_patch()
 
 import os
 import sys
 from pathlib import Path
 
-# Add the project root to the Python path (parent directory of z_extras)
+# ---------------------------------------------------------------------------
+# Path setup — make project root importable and set working directory
+# ---------------------------------------------------------------------------
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
-
-# Change to project root directory so Flask can find templates, static files, etc.
 os.chdir(project_root)
 
-# Set development environment variables
+# Environment
 os.environ['FLASK_ENV'] = 'development'
 os.environ['FLASK_DEBUG'] = '1'
 os.environ['PYTHONUNBUFFERED'] = '1'
 
-# Import the Flask app
-from app import app, socketio
+# ---------------------------------------------------------------------------
+# Application bootstrap (mirrors the import block in app.py)
+# ---------------------------------------------------------------------------
+from extensions import app, socketio          # noqa: E402
+import auth_manager                           # noqa: E402, F401 — registers user_loader
+import websocket_handlers                     # noqa: E402, F401 — registers SocketIO events
+from media_manager import ensure_state_file   # noqa: E402
+from config import (                          # noqa: E402
+    ANIMATIONS_DIR, VIDEOS_DIR, DATA_DIR, CONFIG_DIR, LOGS_DIR, THUMBNAILS_DIR
+)
+from routes import register_routes            # noqa: E402
 
+register_routes(app)
+
+# ---------------------------------------------------------------------------
+# Main
+# ---------------------------------------------------------------------------
 if __name__ == '__main__':
-    print("=" * 60)
-    print("🚀 Angels-TV-Animator LOCAL Development Server")
-    print("=" * 60)
-    print("")
-    print("✨ Features:")
-    print("  • Hot reload for Python, HTML, CSS, JS changes")
-    print("  • Debug mode enabled")
-    print("  • No Docker rebuild required")
-    print("  • Instant feedback loop")
-    print("")
-    print("🌐 Access URLs:")
-    print("  • TV Display:     http://localhost:5000")
-    print("  • Admin Panel:    http://localhost:5000/admin")
-    print("  • API Endpoint:   http://localhost:5000/api/*")
-    print("")
-    print("⚡ Development Tips:")
-    print("  • Make changes to templates, static files, or app.py")
-    print("  • Refresh browser to see changes instantly")
-    print("  • Check terminal for error messages")
-    print("  • Press Ctrl+C to stop server")
-    print("")
-    print("=" * 60)
-    
+    # Create required directories (same as production startup)
+    for d in (ANIMATIONS_DIR, VIDEOS_DIR, DATA_DIR, LOGS_DIR, THUMBNAILS_DIR, CONFIG_DIR):
+        d.mkdir(exist_ok=True)
+    ensure_state_file()
+
+    print("=" * 64)
+    print("  Angels-TV-Animator  —  LOCAL Development Server")
+    print("=" * 64)
+    print()
+    print("  Mode:  Frontend only (no OBS, watchers, or raw WebSocket)")
+    print("         Use Docker for full-stack testing.")
+    print()
+    print("  URLs:")
+    print("    TV Display:   http://localhost:5000")
+    print("    Admin Panel:  http://localhost:5000/admin")
+    print("    Health Check: http://localhost:5000/health")
+    print()
+    print("  Hot reload is active — edit templates, CSS, or JS and")
+    print("  refresh the browser to see changes instantly.")
+    print()
+    print("  Press Ctrl+C to stop.")
+    print("=" * 64)
+
     try:
-        # Only initialize automation in the main process, not in reloader child process
-        if os.environ.get('WERKZEUG_RUN_MAIN') != 'true':
-            # Import automation components inside main block to avoid double initialization
-            from app import DATA_DIR, TriggerFileWatcher, OBSSceneWatcher, OBSWebSocketClient
-            import app as app_module
-            
-            # Initialize automation features for development
-            print("\n🔧 Initializing automation features...")
-            
-            # Initialize file trigger watcher for StreamerBot
-            print("🔍 Starting file trigger watcher...")
-            trigger_file = DATA_DIR / "trigger.txt"
-            file_watcher = TriggerFileWatcher(str(trigger_file))
-            file_watcher.start_watching()
-            print("✓ File trigger watcher started")
-            
-            # Initialize OBS Scene Watcher for automatic animation triggering
-            print("🎬 Starting OBS Scene Watcher...")
-            obs_scene_file = DATA_DIR / "config" / "obs_current_scene.json"
-            obs_mappings_file = DATA_DIR / "config" / "obs_mappings.json"
-            app_module.obs_scene_watcher = OBSSceneWatcher(str(obs_scene_file), str(obs_mappings_file))
-            app_module.obs_scene_watcher.start_watching()
-            print("✓ OBS Scene Watcher started")
-            
-            # Initialize OBS WebSocket client for development
-            print("🎬 Initializing OBS WebSocket client...")
-            app_module.obs_client = OBSWebSocketClient()
-            print("✓ OBS WebSocket client initialized")
-            
-            # Attempt auto-connection if settings exist
-            print("📋 Checking for existing OBS settings...")
-            if app_module.obs_client.load_settings():
-                print("📋 Found OBS settings, enabling persistent connection...")
-                try:
-                    app_module.obs_client.auto_reconnect_enabled = True
-                    app_module.obs_client.should_be_connected = True
-                    app_module.obs_client.enable_persistent_connection()
-                    
-                    if app_module.obs_client.connected:
-                        print("✅ SUCCESSFULLY CONNECTED TO OBS - PERSISTENT CONNECTION ACTIVE")
-                    else:
-                        print("⚠️  Initial connection failed but PERSISTENT RECONNECTION IS ACTIVE")
-                        
-                except Exception as e:
-                    print(f"❌ OBS connection error during development startup: {e}")
-                    try:
-                        app_module.obs_client.auto_reconnect_enabled = True
-                        app_module.obs_client.should_be_connected = True
-                        app_module.obs_client._start_connection_monitor()
-                        print("✅ FORCED connection monitor started - will reconnect when OBS available")
-                    except Exception as monitor_error:
-                        print(f"❌ Could not start connection monitor: {monitor_error}")
-            else:
-                print("ℹ️  No OBS settings found - connection will be available when configured")
-            
-            print("✅ Automation features initialized!\n")
-        
-        # Run Flask with SocketIO in debug mode
         socketio.run(
             app,
             host='0.0.0.0',
             port=5000,
             debug=True,
-            use_reloader=True,  # Re-enabled with proper reloader detection
-            allow_unsafe_werkzeug=True
+            use_reloader=True,
         )
     except KeyboardInterrupt:
-        print("\n👋 Development server stopped by user")
+        print("\nDevelopment server stopped.")
     except Exception as e:
-        print(f"\n❌ Error starting development server: {e}")
+        print(f"\nError starting development server: {e}")
         sys.exit(1)

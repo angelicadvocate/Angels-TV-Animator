@@ -184,6 +184,40 @@
             </div>
 
             <div class="card">
+                <h2><i class="fa-solid fa-mobile-screen-button"></i> Mobile Control Interface</h2>
+                <p>Control your animations from your phone — no OBS or StreamerBot required. Just upload your files and switch between them with a tap.</p>
+                <div class="setup-steps">
+                    <div class="step">
+                        <span class="step-number"><i class="fa-solid fa-wifi"></i></span>
+                        <div class="step-content">
+                            <h4>Access Mobile Control</h4>
+                            <p>Open the mobile control page from any phone or tablet on the same network:</p>
+                            <ul>
+                                <li>Navigate to <code>http://[YOUR_SERVER_IP]:8080/mobile</code> in your phone's browser</li>
+                                <li>Or click the <strong>"Mobile Control"</strong> button from the <a href="/admin" class="inline-link">Admin Dashboard</a></li>
+                                <li>Bookmark the page on your phone for quick access during streams</li>
+                            </ul>
+                            <p style="margin-top: 10px;"><i class="fa-solid fa-lightbulb"></i> <strong>Tip:</strong> On most phones you can "Add to Home Screen" from the browser menu for an app-like shortcut.</p>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <span class="step-number"><i class="fa-solid fa-hand-pointer"></i></span>
+                        <div class="step-content">
+                            <h4>Switching Animations</h4>
+                            <p>The mobile interface shows a StreamDeck-style grid of all your uploaded media:</p>
+                            <ul>
+                                <li>Tap any animation or video thumbnail to instantly switch the TV display</li>
+                                <li>The currently playing animation is highlighted so you always know what's active</li>
+                                <li>Use the <strong>"Stop All"</strong> button to clear the display</li>
+                            </ul>
+                            <p style="margin-top: 10px;">This is the simplest way to control your TV animations — no integrations needed. Upload your files on the <a href="/admin/manage" class="inline-link">Manage Files</a> page, then switch between them from your phone.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
                 <h2><i class="fa-solid fa-users-cog"></i> User Management</h2>
                 <p>Secure your admin panel by managing user accounts and changing default credentials.</p>
                 <div class="setup-steps">
@@ -296,26 +330,26 @@
                             <div class="code-block">
                                 <div class="code-header">
                                     <span>HTML Head Section</span>
-                                    <button class="copy-btn" onclick="copyToClipboard(this, '&lt;!-- Angels-TV-Animator Integration --&gt;\n&lt;link rel=&quot;stylesheet&quot; href=&quot;/static/css/ota-integration.css&quot;&gt;')">
+                                    <button class="copy-btn" onclick="copyToClipboard(this, '&lt;!-- Angels-TV-Animator Integration --&gt;\n&lt;link rel=&quot;stylesheet&quot; href=&quot;/static/css/ata-integration.css&quot;&gt;')">
                                         <i class="fa-solid fa-copy"></i> Copy
                                     </button>
                                 </div>
                                 <pre><code>&lt;!-- Angels-TV-Animator Integration --&gt;
-&lt;link rel="stylesheet" href="/static/css/ota-integration.css"&gt;</code></pre>
+&lt;link rel="stylesheet" href="/static/css/ata-integration.css"&gt;</code></pre>
                             </div>
                             <div class="code-block">
                                 <div class="code-header">
                                     <span>Before Closing Body Tag</span>
-                                    <button class="copy-btn" onclick="copyToClipboard(this, '&lt;!-- Socket.IO and OTA Integration --&gt;\n&lt;script src=&quot;https://cdn.socket.io/4.7.2/socket.io.min.js&quot;&gt;&lt;/script&gt;\n&lt;script src=&quot;/static/js/ota-integration.js&quot;&gt;&lt;/script&gt;\n&lt;script&gt;\n  document.addEventListener(&#39;DOMContentLoaded&#39;, () =&gt; {\n    window.otaIntegration = new OTAIntegration(&#39;mainElement&#39;);\n  });\n&lt;/script&gt;')">
+                                    <button class="copy-btn" onclick="copyToClipboard(this, '&lt;!-- Socket.IO and ATA Integration --&gt;\n&lt;script src=&quot;https://cdn.socket.io/4.7.2/socket.io.min.js&quot;&gt;&lt;/script&gt;\n&lt;script src=&quot;/static/js/ata-integration.js&quot;&gt;&lt;/script&gt;\n&lt;script&gt;\n  document.addEventListener(&#39;DOMContentLoaded&#39;, () =&gt; {\n    window.ataIntegration = new ATAIntegration(&#39;mainElement&#39;);\n  });\n&lt;/script&gt;')">
                                         <i class="fa-solid fa-copy"></i> Copy
                                     </button>
                                 </div>
-                                <pre><code>&lt;!-- Socket.IO and OTA Integration --&gt;
+                                <pre><code>&lt;!-- Socket.IO and ATA Integration --&gt;
 &lt;script src="https://cdn.socket.io/4.7.2/socket.io.min.js"&gt;&lt;/script&gt;
-&lt;script src="/static/js/ota-integration.js"&gt;&lt;/script&gt;
+&lt;script src="/static/js/ata-integration.js"&gt;&lt;/script&gt;
 &lt;script&gt;
   document.addEventListener('DOMContentLoaded', () =&gt; {
-    window.otaIntegration = new OTAIntegration('mainElement');
+    window.ataIntegration = new ATAIntegration('mainElement');
   });
 &lt;/script&gt;</code></pre>
                             </div>
@@ -323,7 +357,7 @@
                                 <li><strong>Connection Status:</strong> Adds a status dot in the top-right corner</li>
                                 <li><strong>Page Refresh:</strong> Enables seamless content switching</li>
                                 <li><strong>Flash Effects:</strong> Visual feedback when animations change</li>
-                                <li><strong>WebSocket Integration:</strong> Real-time communication with OTA server</li>
+                                <li><strong>WebSocket Integration:</strong> Real-time communication with ATA server</li>
                                 <li><strong>Replace 'mainElement':</strong> Use the ID of your main animation element for flash effects</li>
                             </ul>
                             <p class="hint"><i class="fa-solid fa-lightbulb"></i> <strong>Optional:</strong> Animations work without integration, but these features enhance the user experience.</p>

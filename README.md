@@ -77,6 +77,7 @@ You only need **one** of the following installed on your system:
 3. **Access the web interfaces:**
    - **Admin Panel:** http://[DOCKER_HOST_IP]:8080/admin
    - **TV Display:** http://[DOCKER_HOST_IP]:8080
+   - **Health Check:** http://[DOCKER_HOST_IP]:8080/health *(JSON server status & diagnostics)*
    - **Socket.IO API:** ws://[DOCKER_HOST_IP]:8080/socket.io/ *(Flask-SocketIO on main port)*
    - **Raw WebSocket:** ws://[DOCKER_HOST_IP]:8081/ *(StreamerBot integration)*
 

@@ -8,6 +8,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=BBH+Sans+Bogle&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet">
+
+<!-- Angels-TV-Animator Integration -->
+<link rel="stylesheet" href="/static/css/ata-integration.css">
+
 <style>
   body {
     display: flex;
@@ -125,6 +129,20 @@
     const timeZone = now.toLocaleTimeString('en-US', { timeZoneName: 'short' }).split(' ').pop();
     timeElement.innerText = `${timeZone}: ${now.toLocaleTimeString()}`;
   }, 1000);
+</script>
+
+<!-- Include Socket.IO client library -->
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+
+<!-- Angels-TV-Animator Integration -->
+<script src="/static/js/ata-integration.js"></script>
+
+<script>
+  // Initialize ATA integration with the main message element for flash effects
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log('Initializing BRB Screen with ATA Integration');
+    window.ataIntegration = new ATAIntegration('message');
+  });
 </script>
 
 </body>
