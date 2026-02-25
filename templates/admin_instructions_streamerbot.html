@@ -1,14 +1,13 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OBS-TV-Animator - StreamerBot Integration</title>
+    <title>Angels-TV-Animator - StreamerBot Integration</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/OTA_favicon_round.png') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/ATA_favicon_round.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
     <link rel="stylesheet" href="../../static/css/admin_instructions.css">
 </head>
@@ -18,7 +17,7 @@
         <div class="header-left">
             <i class="fas fa-tv header-icon"></i>
             <div class="header-title">
-                <h1>OBS-TV-Animator</h1>
+                <h1>Angels-TV-Animator</h1>
                 <p>StreamerBot Integration</p>
             </div>
         </div>
@@ -89,7 +88,7 @@
             <!-- StreamerBot Integration Overview -->
             <div class="card">
                 <h2><i class="fa-solid fa-robot"></i> StreamerBot Integration</h2>
-                <p>Connect OBS-TV-Animator to StreamerBot to automatically trigger Smart TV animations based on stream events like follows, donations, subscriptions, raids, and chat commands.</p>
+                <p>Connect Angels-TV-Animator to StreamerBot to automatically trigger Smart TV animations based on stream events like follows, donations, subscriptions, raids, and chat commands.</p>
                 
                 <div class="warning-box">
                     <i class="fa-solid fa-exclamation-triangle"></i>
@@ -119,7 +118,7 @@
                     <div class="step">
                         <span class="step-number">2</span>
                         <div class="step-content">
-                            <h4>Test OBS-TV-Animator Connection</h4>
+                            <h4>Test Angels-TV-Animator Connection</h4>
                             <p>First, verify the connection is working by testing in your browser:</p>
                             <div class="config-box">
                                 <strong>Test URLs (open in browser):</strong><br>
@@ -133,6 +132,46 @@
                                 <i class="fa-solid fa-check-circle"></i>
                                 <strong>Success:</strong> You should see a JSON response like:<br>
                                 <code>{"success": true, "current_animation": "anim1.html", ...}</code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <span class="step-number">3</span>
+                        <div class="step-content">
+                            <h4>Connect StreamerBot to Angels-TV-Animator (WebSocket Client)</h4>
+                            <p>StreamerBot needs a persistent WebSocket connection to Angels-TV-Animator. This connection is required for the C# actions to work and enables the status indicator on the <a href="/admin" class="inline-link">Dashboard</a>.</p>
+                            <ol>
+                                <li>In StreamerBot, click <strong>Servers/Clients</strong></li>
+                                <li>Click the <strong>Custom WebSocket Clients</strong> tab</li>
+                                <li>Right-click in the clients list and click <strong>Add</strong></li>
+                                <li>Enter a <strong>Name</strong> (e.g., <code>Angels-TV-Animator</code>)</li>
+                                <li>For <strong>Endpoint</strong>, enter: <code>ws://[IP_ADDRESS]:[PORT]/</code>
+                                    <br>Replace <code>[IP_ADDRESS]</code> with your Angels-TV-Animator host IP and <code>[PORT]</code> with the Raw WebSocket port (main port + 1)
+                                </li>
+                                <li>Enable <strong>Auto Connect at Startup</strong></li>
+                                <li>Enable <strong>Reconnect on Disconnect</strong></li>
+                                <li>Set the <strong>Retry Interval</strong> to a reasonable time period (e.g., <code>30</code> seconds)</li>
+                                <li>Enable <strong>TLS 1.0</strong>, <strong>TLS 1.1</strong>, and <strong>TLS 1.2</strong> toggles</li>
+                                <li>Click <strong>OK</strong></li>
+                            </ol>
+
+                            <div class="config-box">
+                                <strong>Example Endpoint:</strong><br>
+                                <code>ws://192.168.1.100:8081/</code><br><br>
+                                <strong>Default Ports:</strong> If your main application port is <code>8080</code>, the Raw WebSocket port is <code>8081</code> (main port + 1).
+                            </div>
+                            
+                            <p>StreamerBot should automatically connect after clicking OK. You can verify the connection on the <a href="/admin" class="inline-link">Dashboard</a> — the StreamerBot status indicator should turn green.</p>
+                            
+                            <div class="alert alert-info">
+                                <i class="fa-solid fa-lightbulb"></i>
+                                <strong>Tip:</strong> If it doesn't connect automatically the first time, restart StreamerBot, or right-click the connection in the WebSocket Clients list and click <strong>Connect</strong> to manually initiate the connection.
+                            </div>
+
+                            <div class="alert alert-info">
+                                <i class="fa-solid fa-lightbulb"></i>
+                                <strong>Important:</strong> This WebSocket Client connection must be the <strong>first</strong> entry (index <code>0</code>) in your Custom WebSocket Clients list for the default C# code to work. If you have multiple WebSocket Clients, adjust the index in <code>CPH.WebsocketSend(json, 0)</code> to match the position of your Angels-TV-Animator connection.
                             </div>
                         </div>
                     </div>
@@ -211,7 +250,7 @@ public class CPHInline
                             
                             <div class="alert alert-info">
                                 <i class="fa-solid fa-lightbulb"></i>
-                                <strong>Why this works:</strong> StreamerBot's Execute C# Code action uses <code>CPH.WebsocketSend()</code> to communicate directly with OBS-TV-Animator via WebSocket. This provides instant triggering, better error handling, and bidirectional communication.
+                                <strong>Why this works:</strong> StreamerBot's Execute C# Code action uses <code>CPH.WebsocketSend()</code> to communicate directly with Angels-TV-Animator via WebSocket. This provides instant triggering, better error handling, and bidirectional communication.
                             </div>
                         </div>
                     </div>
@@ -283,7 +322,7 @@ public class CPHInline
                                     
                                     <div class="alert alert-info">
                                         <i class="fa-solid fa-lightbulb"></i>
-                                        <strong>Why this works:</strong> StreamerBot's Fetch URL action makes a simple GET request to your OBS-TV-Animator server. 
+                                        <strong>Why this works:</strong> StreamerBot's Fetch URL action makes a simple GET request to your Angels-TV-Animator server. 
                                         The animation parameter in the URL tells the server which animation to display.
                                     </div>
                                 </div>
@@ -473,7 +512,7 @@ public class CPHInline
                     <div class="trouble-item">
                         <h4><i class="fa-solid fa-times-circle"></i> HTTP Request Failures</h4>
                         <ul>
-                            <li>Verify OBS-TV-Animator is running and accessible</li>
+                            <li>Verify Angels-TV-Animator is running and accessible</li>
                             <li>Check the IP address and port (8080)</li>
                             <li>Ensure JSON format is correct in request body</li>
                             <li>Look at StreamerBot logs for specific error messages</li>
@@ -496,7 +535,7 @@ public class CPHInline
                         <ul>
                             <li><strong>Check StreamerBot logs:</strong> Go to <strong>Logs</strong> tab in StreamerBot for C# compilation or runtime errors</li>
                             <li><strong>Verify WebSocket connection:</strong> Look for connection establishment messages in StreamerBot logs</li>
-                            <li><strong>Check Docker/OBS-TV-Animator logs:</strong> View container logs to confirm WebSocket handshake completion</li>
+                            <li><strong>Check Docker/Angels-TV-Animator logs:</strong> View container logs to confirm WebSocket handshake completion</li>
                             <li><strong>Test JSON syntax:</strong> Ensure the JSON string in your C# code is properly formatted (no missing quotes or commas)</li>
                             <li><strong>Confirm network connectivity:</strong> Make sure StreamerBot can reach your Docker container (same network, correct port)</li>
                             <li><strong>Debug step-by-step:</strong> Add <code>CPH.LogInfo("Debug message");</code> to your C# code to track execution flow</li>
@@ -535,7 +574,7 @@ public class CPHInline
             ""source"": ""streamerbot_websocket""
         }}";
         
-        // Send WebSocket message to OBS-TV-Animator
+        // Send WebSocket message to Angels-TV-Animator
         // Note: Change "0" to match your WebSocket connection index if you have multiple WebSocket servers
         CPH.WebsocketSend(json, 0);
         
@@ -548,7 +587,7 @@ public class CPHInline
                     </div>
                     <p><strong>Usage:</strong> Copy this template into StreamerBot's Execute Code (C#) sub-action</p>
                     <p><strong>Customize:</strong> Change <code>animationFile</code> and <code>source</code> values as needed. Remove parameters you don't need.</p>
-                    <p><strong>WebSocket Index:</strong> If you have multiple WebSocket servers in StreamerBot, change the <code>0</code> in <code>CPH.WebsocketSend(json, 0)</code> to match your OBS-TV-Animator connection index.</p>
+                    <p><strong>WebSocket Index:</strong> If you have multiple WebSocket servers in StreamerBot, change the <code>0</code> in <code>CPH.WebsocketSend(json, 0)</code> to match your Angels-TV-Animator connection index.</p>
                     <p><strong><i class="fa-solid fa-lightbulb"></i> Tip:</strong> Use the copy buttons in <a href="/admin/manage" class="inline-link">Manage Files</a> for specific animations instead of manually editing this template.</p>
                 </div>
             </div>
@@ -583,7 +622,7 @@ public class CPHInline
                     <i class="fa-solid fa-trophy"></i>
                     <div>
                         <h4>You're All Set!</h4>
-                        <p>Congratulations! You now have StreamerBot connected to your Smart TV animations. Stream events will trigger awesome visual effects, and your viewers will have an enhanced experience.</p>
+                        <p>Congratulations! You now have StreamerBot connected to your Smart TV animations. Stream events will trigger your awesome visual effects!</p>
                     </div>
                 </div>
                 
@@ -596,7 +635,6 @@ public class CPHInline
                                 <li>StreamerBot is configured with WebSocket/HTTP actions</li>
                                 <li>Your Smart TV can display animations on command</li>
                                 <li>Stream events will trigger awesome visual effects</li>
-                                <li>Your viewers will have an enhanced experience</li>
                             </ul>
                         </div>
                     </div>
@@ -628,7 +666,7 @@ public class CPHInline
     
     <!-- Footer -->
     <footer class="admin-footer">
-        <span>OBS-TV-Animator v{{ app_version }}</span>
+        <span>Angels-TV-Animator v{{ app_version }}</span>
     </footer>
     
     <!-- Include Socket.IO for real-time updates -->

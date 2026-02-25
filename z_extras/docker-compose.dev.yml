@@ -13,11 +13,11 @@
 version: '3.8'
 
 services:
-  obs-tv-animator:
+  angels-tv-animator:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: obs-tv-animator-dev
+    container_name: angels-tv-animator-dev
     restart: unless-stopped
     labels:
       - "version=0.8.5-dev"

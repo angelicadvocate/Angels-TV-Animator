@@ -1,5 +1,5 @@
 
-# OBS-TV-Animator TODO List
+# Angels-TV-Animator TODO List
 
 ## Priority: High (Security & Production Ready)
 
@@ -335,7 +335,7 @@ Make sure to update version numbers as MAJOR.MINOR.PATCH as needed when todo ite
   - Add favicon link tags to base template or all HTML templates
   - Eliminates "GET /favicon.ico 404" console errors during development
   - Improves professional appearance in browser tabs
-  - Added OTA_favicon_round.png to all admin and main templates
+  - Added ATA_favicon_round.png to all admin and main templates
 
 - [x] **Port Configuration & Documentation Improvements** ✨ *COMPLETED* - `github:AngelicAdvocate`
   - Implemented dynamic port configuration with MAIN_PORT and WEBSOCKET_PORT variables

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Local Development Server for OBS-TV-Animator
+Local Development Server for Angels-TV-Animator
 Runs Flask directly on the host for maximum development speed with hot reload.
 
 This bypasses Docker for development to provide instant file change detection.
@@ -35,7 +35,7 @@ from app import app, socketio
 
 if __name__ == '__main__':
     print("=" * 60)
-    print("🚀 OBS-TV-Animator LOCAL Development Server")
+    print("🚀 Angels-TV-Animator LOCAL Development Server")
     print("=" * 60)
     print("")
     print("✨ Features:")

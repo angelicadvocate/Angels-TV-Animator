@@ -57,7 +57,7 @@ class VideoPlayer {
             
             // Connection events
             this.socket.on('connect', () => {
-                console.log('Connected to OBS-TV-Animator server');
+                console.log('Connected to Angels-TV-Animator server');
                 this.updateStatus('Connected', true);
             });
             

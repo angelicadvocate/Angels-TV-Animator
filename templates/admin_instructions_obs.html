@@ -1,14 +1,13 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OBS-TV-Animator - OBS Studio Integration</title>
+    <title>Angels-TV-Animator - OBS Studio Integration</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/OTA_favicon_round.png') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/ATA_favicon_round.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
     <link rel="stylesheet" href="../../static/css/admin_instructions.css">
 </head>
@@ -18,7 +17,7 @@
         <div class="header-left">
             <i class="fas fa-tv header-icon"></i>
             <div class="header-title">
-                <h1>OBS-TV-Animator</h1>
+                <h1>Angels-TV-Animator</h1>
                 <p>OBS Studio Integration</p>
             </div>
         </div>
@@ -89,7 +88,7 @@
             <!-- OBS Integration Overview -->
             <div class="card">
                 <h2><i class="fa-solid fa-gamepad"></i> OBS Studio Integration</h2>
-                <p>Connect OBS-TV-Animator to your OBS Studio to automatically trigger Smart TV animations when you switch scenes, start/stop streaming, or change sources.</p>
+                <p>Connect Angels-TV-Animator to your OBS Studio to automatically trigger Smart TV animations when you switch scenes, start/stop streaming, or change sources.</p>
                 
                 <div class="warning-box">
                     <i class="fa-solid fa-exclamation-triangle"></i>
@@ -97,17 +96,76 @@
                 </div>
             </div>
 
-            <!-- Method 1: HTTP Requests -->
+            <!-- Method 1: OBS WebSocket Connection -->
             <div class="card">
-                <h2><i class="fa-solid fa-globe"></i> Method 1: HTTP Request Automation (Recommended)</h2>
-                <p>The simplest way to integrate is using HTTP requests that can be triggered from OBS filters, StreamerBot, or other automation tools.</p>
+                <h2><i class="fa-solid fa-plug"></i> Method 1: OBS WebSocket Connection (Recommended)</h2>
+                <p>The easiest way to integrate OBS with Angels-TV-Animator. Connect directly to your OBS instance and automatically trigger animations when you switch scenes.</p>
                 
                 <div class="setup-steps">
                     <div class="step">
                         <span class="step-number">1</span>
                         <div class="step-content">
+                            <h4>Get OBS WebSocket Connection Info</h4>
+                            <ol>
+                                <li>Open your OBS Studio instance</li>
+                                <li>Click <strong>Tools</strong> in the menu bar</li>
+                                <li>Click <strong>WebSocket Server Settings</strong></li>
+                                <li>Click <strong>Show Connect Info</strong></li>
+                                <li>Note the connection details (Server IP, Port, and Password)</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <span class="step-number">2</span>
+                        <div class="step-content">
+                            <h4>Configure OBS Settings in Angels-TV-Animator</h4>
+                            <p>Copy the connection info from OBS into the Angels-TV-Animator settings page:</p>
+                            <ol>
+                                <li>Go to the <a href="/admin/obs" class="inline-link">OBS Settings</a> page (also found on the Admin Dashboard under <strong>Quick Actions → Manage OBS Settings</strong>)</li>
+                                <li>Enter the OBS connection details (Host, Port, and Password)</li>
+                                <li>Click the <strong>Save Settings</strong> button</li>
+                                <li>Click the <strong>Test Connection</strong> button to verify — it should display <strong>"Connected"</strong> if properly configured</li>
+                                <li>To enable or disable the automatic OBS connection, use the toggle on the right side of the page</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <span class="step-number">3</span>
+                        <div class="step-content">
+                            <h4>Assign Animations to OBS Scenes</h4>
+                            <p>Map your OBS scenes to specific animations so they trigger automatically when you switch scenes:</p>
+                            <ol>
+                                <li>Click the <strong>Add Scene Mapping</strong> button</li>
+                                <li>Choose the OBS scene from the dropdown</li>
+                                <li>Choose the animation file to link from the dropdown</li>
+                                <li>Click the <strong>Save</strong> button</li>
+                                <li>Repeat as necessary for additional scene/animation pairs</li>
+                            </ol>
+                            <p>To remove a mapping, click the <strong>Delete</strong> button on the row for that mapping.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Method 2: HTTP Requests -->
+            <div class="card">
+                <h2><i class="fa-solid fa-globe"></i> Method 2: HTTP Request Automation</h2>
+                <p>This method uses HTTP requests that can be triggered from OBS filters, StreamerBot, or other automation tools.</p>
+                
+                <details>
+                    <summary class="collapsible-header">
+                        <i class="fa-solid fa-chevron-right"></i>
+                        Show HTTP Request Method Instructions
+                    </summary>
+                    <div class="collapsible-content">
+                <div class="setup-steps">
+                    <div class="step">
+                        <span class="step-number">1</span>
+                        <div class="step-content">
                             <h4>API Endpoints</h4>
-                            <p>OBS-TV-Animator provides simple HTTP endpoints to control animations:</p>
+                            <p>Angels-TV-Animator provides simple HTTP endpoints to control animations:</p>
                             <pre class="code-block">POST http://[YOUR_IP]:8080/api/trigger
 Content-Type: application/json
 
@@ -146,41 +204,8 @@ Content-Type: application/json
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Method 2: Browser Source -->
-            <div class="card">
-                <h2><i class="fa-solid fa-window-maximize"></i> Method 2: Browser Source Integration</h2>
-                <p>Add animations directly into your OBS scenes for overlay effects or testing purposes.</p>
-                
-                <div class="setup-steps">
-                    <div class="step">
-                        <span class="step-number">1</span>
-                        <div class="step-content">
-                            <h4>Add Browser Source</h4>
-                            <ol>
-                                <li>In OBS, add a new <strong>Browser Source</strong> to any scene</li>
-                                <li>Set the URL to: <code>http://[YOUR_IP]:8080</code></li>
-                                <li>Set Width: 1920, Height: 1080 (or your desired resolution)</li>
-                                <li>Enable "Shutdown source when not visible"</li>
-                                <li>Enable "Refresh browser when scene becomes active"</li>
-                            </ol>
-                        </div>
                     </div>
-
-                    <div class="step">
-                        <span class="step-number">2</span>
-                        <div class="step-content">
-                            <h4>Synchronization</h4>
-                            <p>When you trigger animations from the admin panel:</p>
-                            <ul>
-                                <li>The Smart TV will update instantly</li>
-                                <li>The OBS Browser Source will update when you switch to that scene</li>
-                                <li>Use this for preview/testing or as an overlay element</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+                </details>
             </div>
 
             <!-- Method 3: Custom Script -->
@@ -188,6 +213,12 @@ Content-Type: application/json
                 <h2><i class="fa-solid fa-code"></i> Method 3: Python Script Integration</h2>
                 <p>For advanced users who want custom automation logic.</p>
                 
+                <details>
+                    <summary class="collapsible-header">
+                        <i class="fa-solid fa-chevron-right"></i>
+                        Show Python Script Method Instructions
+                    </summary>
+                    <div class="collapsible-content">
                 <div class="setup-steps">
                     <div class="step">
                         <span class="step-number">1</span>
@@ -199,7 +230,7 @@ import time
 import obs_websocket_api  # pip install obs-websocket-py
 
 def trigger_animation(animation_name):
-    """Send animation trigger to OBS-TV-Animator"""
+    """Send animation trigger to Angels-TV-Animator"""
     url = "http://[YOUR_IP]:8080/api/trigger"
     payload = {
         "animation": animation_name,
@@ -239,6 +270,8 @@ def on_scene_change(scene_name):
                         </div>
                     </div>
                 </div>
+                    </div>
+                </details>
             </div>
 
             <!-- Scene-Specific Setups -->
@@ -288,7 +321,7 @@ def on_scene_change(scene_name):
                     <div class="trouble-item">
                         <h4><i class="fa-solid fa-times-circle"></i> API Requests Failing</h4>
                         <ul>
-                            <li>Check that OBS-TV-Animator is running on port 8080</li>
+                            <li>Check that Angels-TV-Animator is running on port 8080</li>
                             <li>Verify the IP address is correct</li>
                             <li>Test with cURL first before setting up automation</li>
                             <li>Check firewall is allowing port 8080</li>
@@ -344,7 +377,7 @@ def on_scene_change(scene_name):
     
     <!-- Footer -->
     <footer class="admin-footer">
-        <span>OBS-TV-Animator v{{ app_version }}</span>
+        <span>Angels-TV-Animator v{{ app_version }}</span>
     </footer>
     
     <!-- Include Socket.IO for real-time updates -->

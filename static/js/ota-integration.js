@@ -1,8 +1,8 @@
 /**
- * OBS-TV-Animator Integration Library
+ * Angels-TV-Animator Integration Library
  * 
  * Provides WebSocket connectivity, status indicators, and animation handling
- * for HTML animations in the OBS-TV-Animator system.
+ * for HTML animations in the Angels-TV-Animator system.
  * 
  * Usage:
  *   // Basic integration
@@ -45,7 +45,7 @@ class OTAIntegration {
     }
     
     init() {
-        console.log('Initializing OBS-TV-Animator Integration...');
+        console.log('Initializing Angels-TV-Animator Integration...');
         
         if (this.options.showStatusIndicator) {
             this.createStatusIndicator();
@@ -78,13 +78,13 @@ class OTAIntegration {
     
     initWebSocket() {
         try {
-            // Connect to the OBS-TV-Animator server
+            // Connect to the Angels-TV-Animator server
             const serverUrl = window.location.origin;
             this.socket = io(serverUrl);
             
             // Connection events
             this.socket.on('connect', () => {
-                console.log('Connected to OBS-TV-Animator server');
+                console.log('Connected to Angels-TV-Animator server');
                 this.updateStatus('Connected', true);
                 
                 if (this.options.enableFlashEffects) {

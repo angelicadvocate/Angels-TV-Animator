@@ -1,14 +1,13 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OBS-TV-Animator - Getting Started</title>
+    <title>Angels-TV-Animator - Getting Started</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/OTA_favicon_round.png') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/ATA_favicon_round.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
     <link rel="stylesheet" href="../../static/css/admin_instructions.css">
 </head>
@@ -18,7 +17,7 @@
         <div class="header-left">
             <i class="fas fa-tv header-icon"></i>
             <div class="header-title">
-                <h1>OBS-TV-Animator</h1>
+                <h1>Angels-TV-Animator</h1>
                 <p>Getting Started</p>
             </div>
         </div>
@@ -88,8 +87,8 @@
 
             <!-- Getting Started Content -->
             <div class="card">
-                <h2><i class="fa-solid fa-rocket"></i> Getting Started with OBS-TV-Animator</h2>
-                <p>Welcome! This guide will walk you through the basic setup process to get your Smart TV displaying animations from OBS-TV-Animator.</p>
+                <h2><i class="fa-solid fa-rocket"></i> Getting Started with Angels-TV-Animator</h2>
+                <p>Welcome! This guide will walk you through the basic setup process to get your Smart TV displaying animations from Angels-TV-Animator.</p>
             </div>
 
             <div class="card">
@@ -100,7 +99,7 @@
                     <i class="fa-solid fa-check-circle"></i>
                     <div>
                         <h4>Congratulations!</h4>
-                        <p>If you've made it here, you have successfully setup Docker with OBS-TV-Animator. Make sure that your bind mounts were added correctly in the <code>docker-compose.yml</code> or through Docker GUI/Docker Desktop to ensure that files and settings persist across restarts.</p>
+                        <p>If you've made it here, you have successfully setup Docker with Angels-TV-Animator. Make sure that your bind mounts were added correctly in the <code>docker-compose.yml</code> or through Docker GUI/Docker Desktop to ensure that files and settings persist across restarts.</p>
                     </div>
                 </div>
                 
@@ -128,6 +127,11 @@
                                 <li>The current animation should auto-play fullscreen</li>
                                 <li>Changes will appear instantly when triggered from the admin panel</li>
                             </ol>
+
+                            <div class="alert alert-info">
+                                <i class="fa-solid fa-exclamation-triangle"></i>
+                                <strong>TV Compatibility Note:</strong> Some Smart TVs have built-in web browsers that block JavaScript from running, which will prevent animations from working. To test, try loading the same URL on your PC or phone browser first — if it works there but not on your TV, your TV's browser is not compatible. We recommend <strong>Android TV</strong> or similar streaming devices. Some web browser apps on these devices work better than others, so try a different browser app if you experience issues.
+                            </div>
                         </div>
                     </div>
 
@@ -214,7 +218,7 @@
 
             <div class="card">
                 <h2><i class="fa-solid fa-palette"></i> Understanding Animation Types</h2>
-                <p>OBS-TV-Animator supports both HTML animations and video files, each with their own advantages.</p>
+                <p>Angels-TV-Animator supports both HTML animations and video files, each with their own advantages.</p>
                 <div class="setup-steps">
                     <div class="step">
                         <span class="step-number"><i class="fa-solid fa-code"></i></span>
@@ -265,16 +269,16 @@
                     <div class="step">
                         <span class="step-number"><i class="fa-solid fa-plug"></i></span>
                         <div class="step-content">
-                            <h4>OBS-TV-Animator Integration</h4>
+                            <h4>Angels-TV-Animator Integration</h4>
                             <p>For full system integration, add these lines to your custom HTML animations:</p>
                             <div class="code-block">
                                 <div class="code-header">
                                     <span>HTML Head Section</span>
-                                    <button class="copy-btn" onclick="copyToClipboard(this, '&lt;!-- OBS-TV-Animator Integration --&gt;\n&lt;link rel=&quot;stylesheet&quot; href=&quot;/static/css/ota-integration.css&quot;&gt;')">
+                                    <button class="copy-btn" onclick="copyToClipboard(this, '&lt;!-- Angels-TV-Animator Integration --&gt;\n&lt;link rel=&quot;stylesheet&quot; href=&quot;/static/css/ota-integration.css&quot;&gt;')">
                                         <i class="fa-solid fa-copy"></i> Copy
                                     </button>
                                 </div>
-                                <pre><code>&lt;!-- OBS-TV-Animator Integration --&gt;
+                                <pre><code>&lt;!-- Angels-TV-Animator Integration --&gt;
 &lt;link rel="stylesheet" href="/static/css/ota-integration.css"&gt;</code></pre>
                             </div>
                             <div class="code-block">
@@ -415,7 +419,7 @@
     
     <!-- Footer -->
     <footer class="admin-footer">
-        <span>OBS-TV-Animator v{{ app_version }}</span>
+        <span>Angels-TV-Animator v{{ app_version }}</span>
     </footer>
     
     <!-- Include Socket.IO for real-time updates -->

@@ -57,8 +57,8 @@ You only need **one** of the following installed on your system:
 
 1. **Clone this repository:**
    ```bash
-   git clone https://github.com/angelicadvocate/OBS-TV-Animator.git
-   cd obs-tv-animator
+   git clone https://github.com/angelicadvocate/Angels-TV-Animator.git
+   cd Angels-TV-Animator
    ```
 
 2. **Build and start the container:**
@@ -103,7 +103,7 @@ All configuration and media management are now handled in the web UI:
 
 ## 🔗 Integrations
 
-OBS-TV-Animator integrates seamlessly with event-based tools like OBS and StreamerBot:
+Angels-TV-Animator integrates seamlessly with event-based tools like OBS and StreamerBot:
 
 - **OBS WebSocket:** Trigger media changes on scene transitions
 - **StreamerBot:** Automate event-based triggers

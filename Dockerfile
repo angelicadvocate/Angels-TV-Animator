@@ -2,7 +2,7 @@
 FROM python:3.11-slim
 
 # Set metadata
-LABEL maintainer="OBS-TV-Animator"
+LABEL maintainer="Angels-TV-Animator"
 LABEL description="WebSocket-enabled server for Smart TV animations and video playback"
 LABEL version="2.0.0"
 
@@ -66,6 +66,7 @@ RUN playwright install chromium
 
 # Expose port
 EXPOSE 8080
+EXPOSE 8081
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \

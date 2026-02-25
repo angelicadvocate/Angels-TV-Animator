@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OBS-TV-Animator - OBS Management</title>
+    <title>Angels-TV-Animator - OBS Management</title>
     
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="../static/assets/OTA_favicon_round.png">
-    <link rel="shortcut icon" type="image/png" href="../static/assets/OTA_favicon_round.png">
+    <link rel="icon" type="image/png" href="../static/assets/ATA_favicon_round.png">
+    <link rel="shortcut icon" type="image/png" href="../static/assets/ATA_favicon_round.png">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -308,7 +308,7 @@
         <div class="header-left">
             <i class="fas fa-tv header-icon"></i>
             <div class="header-title">
-                <h1>OBS-TV-Animator</h1>
+                <h1>Angels-TV-Animator</h1>
                 <p>OBS Management</p>
             </div>
         </div>
@@ -453,6 +453,15 @@
         <!-- Current Scene Status Card -->
         <div class="card">
             <h3><i class="fa-solid fa-eye"></i> Current Scene Status</h3>
+            <div style="margin-bottom: 15px; padding: 12px; background: rgba(33, 150, 243, 0.1); border: 1px solid rgba(33, 150, 243, 0.3); border-radius: 6px;">
+                <div style="display: flex; align-items: start; gap: 10px;">
+                    <i class="fa-solid fa-info-circle" style="color: #2196f3; margin-top: 2px;"></i>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">
+                        <strong style="color: var(--text-primary);">Tip:</strong> Scene updates are triggered by OBS scene change events. 
+                        If the scene doesn't update after connecting, try <strong>changing scenes in OBS</strong> to trigger an update in Angels-TV-Animator.
+                    </div>
+                </div>
+            </div>
             <div id="currentSceneInfo">
                 <div style="text-align: center; padding: 20px; color: var(--text-secondary);">
                     <i class="fa-solid fa-video-slash" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5;"></i>
@@ -464,7 +473,7 @@
 
     <!-- Footer -->
     <footer class="admin-footer">
-        <span>OBS-TV-Animator v{{ app_version }}</span>
+        <span>Angels-TV-Animator v{{ app_version }}</span>
     </footer>
 
     <!-- Include Socket.IO for real-time updates -->
@@ -490,7 +499,7 @@
                 
                 // Update the status display IMMEDIATELY (don't wait for storage)
                 const currentSceneList = availableScenes.length > 0 ? availableScenes : [];
-                updateCurrentSceneDisplay(data.scene_name, currentSceneList);
+                updateCurrentSceneDisplay(data.scene_name, currentSceneList, null, new Date().toISOString());
                 
                 // Save to persistent storage (async, don't block UI)
                 savePersistentSceneData(data.scene_name);
@@ -528,7 +537,7 @@
             // Display stored scene immediately if we have it
             if (currentScene) {
                 console.log('🎬 Displaying stored scene immediately:', currentScene);
-                updateCurrentSceneDisplay(currentScene, persistentSceneData?.scene_list || []);
+                updateCurrentSceneDisplay(currentScene, persistentSceneData?.scene_list || [], null, persistentSceneData?.last_updated);
             }
             
             await checkOBSConnectionStatus(); // Check current connection status
@@ -654,7 +663,7 @@
                         if (hasFreshRealTimeData && currentScene) {
                             // We have fresh real-time data, don't override it with potentially stale backend data
                             console.log(`🎯 Using fresh real-time scene data (${timeSinceLastRealTime}ms old):`, currentScene);
-                            updateCurrentSceneDisplay(currentScene, data.scene_list);
+                            updateCurrentSceneDisplay(currentScene, data.scene_list, null, new Date().toISOString());
                         } else {
                             // Use scene from backend, fallback to memory, then fallback to persistent storage
                             let sceneToDisplay = data.current_scene || currentScene;
@@ -673,7 +682,7 @@
                                 savePersistentSceneData(data.current_scene); // Save to persistent storage
                             }
                             
-                            updateCurrentSceneDisplay(sceneToDisplay, data.scene_list);
+                            updateCurrentSceneDisplay(sceneToDisplay, data.scene_list, null, persistentSceneData?.last_updated);
                         }
                     } else {
                         console.log('❌ OBS is not connected');
@@ -1121,8 +1130,8 @@
             });
         }
         
-        function updateCurrentSceneDisplay(currentScene, sceneList, status) {
-            console.log('🎬 updateCurrentSceneDisplay called:', {currentScene, sceneCount: sceneList.length, status});
+        function updateCurrentSceneDisplay(currentScene, sceneList, status, lastUpdated) {
+            console.log('🎬 updateCurrentSceneDisplay called:', {currentScene, sceneCount: sceneList.length, status, lastUpdated});
             
             const sceneInfoElement = document.getElementById('currentSceneInfo');
             
@@ -1148,12 +1157,31 @@
                     <div style="text-align: center; padding: 20px; color: var(--text-secondary);">
                         <i class="fa-solid ${icon}" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5;"></i>
                         <p>${message}</p>
+                        ${persistentSceneData?.current_scene ? `
+                            <div style="margin-top: 20px; padding: 15px; background: rgba(255, 152, 0, 0.1); border: 1px solid rgba(255, 152, 0, 0.3); border-radius: 8px;">
+                                <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 10px;">
+                                    <i class="fa-solid fa-exclamation-triangle" style="color: #ff9800;"></i>
+                                    <strong style="color: #ff9800;">Stale Scene Data Detected</strong>
+                                </div>
+                                <p style="margin: 5px 0; font-size: 0.9rem;">Last stored scene: <strong>${persistentSceneData.current_scene}</strong></p>
+                                <p style="margin: 5px 0; font-size: 0.85rem; opacity: 0.8;">Last updated: ${formatTimestamp(persistentSceneData.last_updated)}</p>
+                                <button onclick="clearSceneData()" class="btn-danger-small" style="margin-top: 10px; padding: 8px 16px;">
+                                    <i class="fa-solid fa-trash"></i> Clear Stale Data
+                                </button>
+                            </div>
+                        ` : ''}
                     </div>
                 `;
                 return;
             }
             
             // Connected with scene data
+            const timestampHtml = lastUpdated ? `
+                <div style="margin-top: 10px; font-size: 0.85rem; color: var(--text-secondary); opacity: 0.8;">
+                    <i class="fa-solid fa-clock"></i> Last updated: ${formatTimestamp(lastUpdated)}
+                </div>
+            ` : '';
+            
             sceneInfoElement.innerHTML = `
                 <div style="text-align: center; padding: 20px;">
                     <div style="margin-bottom: 15px;">
@@ -1166,11 +1194,67 @@
                     <div style="margin-top: 15px; font-size: 0.9rem; color: var(--text-secondary);">
                         <i class="fa-solid fa-list"></i> ${sceneList.length} total scenes available
                     </div>
+                    ${timestampHtml}
                 </div>
             `;
             
             console.log('🎬 Current scene display updated');
         }
+        
+        function formatTimestamp(timestamp) {
+            if (!timestamp) return 'Never';
+            
+            try {
+                const date = new Date(timestamp);
+                const now = new Date();
+                const diffMs = now - date;
+                const diffMins = Math.floor(diffMs / 60000);
+                const diffHours = Math.floor(diffMs / 3600000);
+                const diffDays = Math.floor(diffMs / 86400000);
+                
+                if (diffMins < 1) return 'Just now';
+                if (diffMins < 60) return `${diffMins} minute${diffMins !== 1 ? 's' : ''} ago`;
+                if (diffHours < 24) return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
+                if (diffDays < 7) return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
+                
+                // For old dates, show full date
+                return date.toLocaleString();
+            } catch (e) {
+                return timestamp;
+            }
+        }
+        
+        async function clearSceneData() {
+            if (!confirm('Clear stale scene data? This will remove the stored scene information until OBS sends a new scene update.')) {
+                return;
+            }
+            
+            try {
+                console.log('🗑️ Clearing scene data...');
+                const response = await fetch('/api/obs/current-scene', {
+                    method: 'DELETE'
+                });
+                
+                const data = await response.json();
+                console.log('🗑️ Clear response:', data);
+                
+                if (data.success) {
+                    // Clear local variables
+                    persistentSceneData = null;
+                    currentScene = null;
+                    
+                    // Refresh the display
+                    updateCurrentSceneDisplay(null, [], null);
+                    showSuccess('Scene data cleared successfully!');
+                } else {
+                    alert('Failed to clear scene data: ' + (data.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('❌ Error clearing scene data:', error);
+                alert('Failed to clear scene data. Check console for details.');
+            }
+        }
+
 
         
         async function refreshScenes() {

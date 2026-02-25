@@ -1,7 +1,7 @@
 # SETUP REQUIRED: Replace "PATH_TO_YOUR" with your actual project directory path
 # Example: 
-#   Windows: C:/Users/YourName/Documents/OBS-TV-Animator
-#   Linux/macOS: /home/yourname/OBS-TV-Animator
+#   Windows: C:/Users/YourName/Documents/Angels-TV-Animator
+#   Linux/macOS: /home/yourname/Angels-TV-Animator
 # Or use relative paths: ./animations, ./videos, ./data
 #
 # PORT CONFIGURATION: To change the port, modify ONLY the first number in "8080:8080" below
@@ -14,16 +14,17 @@
 version: '3.8'
 
 services:
-  obs-tv-animator:
+  angels-tv-animator:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: obs-tv-animator
+    container_name: angels-tv-animator
     restart: unless-stopped
     labels:
       - "version=0.8.6"
     ports:
       - "8080:8080"  # Main application (external:internal port mapping)
+      - "8081:8081"  # Streamerbot WebSocket (external:internal port mapping)
     volumes:
       # Mount media directories to allow adding/deleting content without rebuilding
       - PATH_TO_YOUR/animations:/app/animations

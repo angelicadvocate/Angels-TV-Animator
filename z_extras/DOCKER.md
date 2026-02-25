@@ -1,6 +1,6 @@
 # Docker Deployment Guide
 
-This guide covers deploying OBS-TV-Animator using Docker for easy setup, updates, and management.
+This guide covers deploying Angels-TV-Animator using Docker for easy setup, updates, and management.
 
 ## Prerequisites
 
@@ -11,8 +11,8 @@ This guide covers deploying OBS-TV-Animator using Docker for easy setup, updates
 
 ### 1. Clone and Setup
 ```bash
-git clone https://github.com/angelicadvocate/OBS-TV-Animator.git
-cd OBS-TV-Animator
+git clone https://github.com/angelicadvocate/Angels-TV-Animator.git
+cd Angels-TV-Animator
 ```
 
 ### 2. Start with Docker Compose
@@ -21,7 +21,7 @@ cd OBS-TV-Animator
 docker-compose up -d
 
 # View logs
-docker-compose logs -f obs-tv-animator
+docker-compose logs -f Angels-TV-Animator
 ```
 
 ### 3. Access Your Server
@@ -32,7 +32,7 @@ docker-compose logs -f obs-tv-animator
 ## Directory Structure
 
 ```
-OBS-TV-Animator/
+Angels-TV-Animator/
 ├── animations/          # HTML animation files (mounted to container)
 ├── videos/             # Video files (mounted to container) 
 ├── data/               # Persistent state (mounted to container)
@@ -73,7 +73,7 @@ docker-compose logs
 docker-compose logs -f
 
 # Logs for specific service
-docker-compose logs obs-tv-animator
+docker-compose logs Angels-TV-Animator
 
 # Last 50 lines
 docker-compose logs --tail=50
@@ -85,10 +85,10 @@ docker-compose logs --tail=50
 docker-compose ps
 
 # View container details
-docker inspect obs-tv-animator
+docker inspect Angels-TV-Animator
 
 # Execute commands inside container
-docker-compose exec obs-tv-animator bash
+docker-compose exec Angels-TV-Animator bash
 ```
 
 ## Adding Content
@@ -137,7 +137,7 @@ docker-compose up -d
 docker-compose ps
 
 # View health check logs
-docker inspect obs-tv-animator | grep -A 20 "Health"
+docker inspect Angels-TV-Animator | grep -A 20 "Health"
 
 # Manual health check
 curl -f http://localhost:8080/health
@@ -174,7 +174,7 @@ PORT=8080                     # Server port
 PYTHONUNBUFFERED=1           # Python output buffering
 
 # Container settings
-CONTAINER_NAME=obs-tv-animator
+CONTAINER_NAME=Angels-TV-Animator
 RESTART_POLICY=unless-stopped
 
 # Volume paths
@@ -195,7 +195,7 @@ mkdir -p data logs
 docker-compose up -d
 
 # Enable automatic startup
-docker update --restart unless-stopped obs-tv-animator
+docker update --restart unless-stopped Angels-TV-Animator
 ```
 
 ### Advanced Production (with Nginx)
@@ -211,7 +211,7 @@ docker-compose up -d
 ### Production Security
 ```bash
 # Run security scan
-docker scout cves obs-tv-animator
+docker scout cves Angels-TV-Animator
 
 # Update base images regularly
 docker-compose pull
@@ -238,7 +238,7 @@ lsof -i :8080
 #### Container Won't Start
 ```bash
 # Check logs for errors
-docker-compose logs obs-tv-animator
+docker-compose logs Angels-TV-Animator
 
 # Check container status
 docker-compose ps
@@ -253,7 +253,7 @@ docker-compose up -d --build
 sudo chown -R $USER:$USER ./animations ./videos ./data
 
 # Or run container with current user
-docker-compose exec --user $(id -u):$(id -g) obs-tv-animator bash
+docker-compose exec --user $(id -u):$(id -g) Angels-TV-Animator bash
 ```
 
 #### Network Issues
@@ -262,10 +262,10 @@ docker-compose exec --user $(id -u):$(id -g) obs-tv-animator bash
 docker network ls
 
 # Inspect network configuration
-docker network inspect obs-tv-animator_obs-network
+docker network inspect Angels-TV-Animator_obs-network
 
 # Test connectivity
-docker-compose exec obs-tv-animator ping host.docker.internal
+docker-compose exec Angels-TV-Animator ping host.docker.internal
 ```
 
 ### Debug Mode
@@ -275,7 +275,7 @@ docker run -it -p 8080:8080 \
   -v $(pwd):/app \
   -e FLASK_ENV=development \
   -e FLASK_DEBUG=1 \
-  obs-tv-animator
+  Angels-TV-Animator
 
 # Or edit docker-compose.yml:
 # environment:
@@ -310,7 +310,7 @@ volumes:
 ### Monitoring
 ```bash
 # Monitor resource usage
-docker stats obs-tv-animator
+docker stats Angels-TV-Animator
 
 # Monitor with docker-compose
 docker-compose top
@@ -345,8 +345,8 @@ socket.emit('trigger_animation', {
 ```bash
 #!/bin/bash
 # Auto-update script
-cd /path/to/OBS-TV-Animator
+cd /path/to/Angels-TV-Animator
 git pull
 docker-compose up -d --build
-echo "OBS-TV-Animator updated successfully"
+echo "Angels-TV-Animator updated successfully"
 ```

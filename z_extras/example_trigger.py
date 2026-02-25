@@ -17,7 +17,7 @@ def trigger_animation(animation_name, server_url="http://localhost:8080"):
     
     Args:
         animation_name: Name of the animation file (e.g., 'anim1.html')
-        server_url: Base URL of the OBS-TV-Animator server
+        server_url: Base URL of the Angels-TV-Animator server
     
     Returns:
         dict: Response from the server
@@ -38,7 +38,7 @@ def list_animations(server_url="http://localhost:8080"):
     Get list of available animations from the server.
     
     Args:
-        server_url: Base URL of the OBS-TV-Animator server
+        server_url: Base URL of the Angels-TV-Animator server
     
     Returns:
         dict: Response with list of animations
@@ -59,7 +59,7 @@ def trigger_animation_websocket(animation_name, server_url="http://localhost:808
     
     Args:
         animation_name: Name of the animation file (e.g., 'anim1.html')
-        server_url: Base URL of the OBS-TV-Animator server
+        server_url: Base URL of the Angels-TV-Animator server
     
     Returns:
         dict: Response from the server
@@ -112,7 +112,7 @@ def trigger_scene_change_websocket(scene_name, server_url="http://localhost:8080
     
     Args:
         scene_name: Name of the OBS scene
-        server_url: Base URL of the OBS-TV-Animator server
+        server_url: Base URL of the Angels-TV-Animator server
         animation_mapping: Optional dict mapping scene names to animations
     
     Returns:
@@ -176,7 +176,7 @@ def control_video_websocket(action, value=None, server_url="http://localhost:808
     Args:
         action: Video control action (play, pause, seek, volume, etc.)
         value: Optional value for actions that need it (seek time, volume level)
-        server_url: Base URL of the OBS-TV-Animator server
+        server_url: Base URL of the Angels-TV-Animator server
     
     Returns:
         dict: Response from the server

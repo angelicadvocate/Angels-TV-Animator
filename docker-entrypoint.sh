@@ -1,10 +1,10 @@
 #!/bin/bash
-# Docker entrypoint script for OBS-TV-Animator
+# Docker entrypoint script for Angels-TV-Animator
 
 set -e
 
 echo "===================================================================================="
-echo "OBS-TV-Animator Docker Container Starting..."
+echo "Angels-TV-Animator Docker Container Starting..."
 echo "===================================================================================="
 echo '  ____  ____   _____    _________      __            _   _ _____ __  __       _______ ____  _____  '
 echo ' / __ \|  _ \ / ____|  |__   __\ \    / /      /\   | \ | |_   _|  \/  |   /\|__   __/ __ \|  __ \ '

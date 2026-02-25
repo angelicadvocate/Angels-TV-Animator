@@ -1,14 +1,14 @@
 /* =============================================================================
-   OBS-TV-Animator Global JavaScript
+   Angels-TV-Animator Global JavaScript
    Share and Support Functions
    ============================================================================= */
 
 // Project configuration
 const PROJECT_CONFIG = {
-    shareURL: "https://github.com/angelicadvocate/OBS-TV-Animator",
+    shareURL: "https://github.com/angelicadvocate/Angels-TV-Animator",
     shareText: "Check out this awesome Smart TV animation system for OBS Studio!",
     tipURL: "https://streamelements.com/angelicadvocate/tip",
-    githubURL: "https://github.com/angelicadvocate/OBS-TV-Animator"
+    githubURL: "https://github.com/angelicadvocate/Angels-TV-Animator"
 };
 
 // Social sharing functions

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-OBS-TV-Animator: A Flask-SocketIO server to display HTML/CSS/JS animations on a Smart TV.
+Angels-TV-Animator: A Flask-SocketIO server to display HTML/CSS/JS animations on a Smart TV.
 Supports dynamic updates triggered via OBS WebSocket, StreamerBot, or REST API.
 """
 
@@ -24,7 +24,7 @@ import threading
 from obswebsocket import obsws, requests, events
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'obs-tv-animator-secret-key'
+app.config['SECRET_KEY'] = 'angels-tv-animator-secret-key'
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=1)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
@@ -1305,7 +1305,7 @@ def handle_connect():
     socketio.emit('devices_updated', get_connected_devices_info(), room=None)
     
     emit('status', {
-        'message': 'Connected to OBS-TV-Animator server',
+        'message': 'Connected to Angels-TV-Animator server',
         'current_animation': load_state().get('current_animation'),
         'available_animations': get_animation_files()
     })
@@ -2634,7 +2634,7 @@ if __name__ == '__main__':
             json.dump(default_users, f, indent=2)
     
     # Run the Flask-SocketIO server on all interfaces (0.0.0.0) port 8080
-    print("OBS-TV-Animator WebSocket Server Starting...")
+    print("Angels-TV-Animator WebSocket Server Starting...")
     print("=" * 84)
     print(f"Available animations: {get_animation_files()}")
     print(f"Available videos: {get_video_files()}")
@@ -3134,6 +3134,26 @@ def api_obs_current_scene_post():
         return jsonify({'success': False, 'error': str(e)}), 500
 
 
+@app.route('/api/obs/current-scene', methods=['DELETE'])
+@admin_required
+def api_obs_current_scene_delete():
+    """Clear/reset current scene data in persistent storage"""
+    try:
+        current_scene_path = DATA_DIR / 'config' / 'obs_current_scene.json'
+        
+        # Delete the file if it exists
+        if current_scene_path.exists():
+            current_scene_path.unlink()
+            print("🗑️ Cleared persistent scene data file")
+        
+        return jsonify({
+            'success': True, 
+            'message': 'Scene data cleared successfully'
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
 # =============================================================================
 # Main Application Startup
 # =============================================================================
@@ -3188,7 +3208,7 @@ if __name__ == '__main__':
             json.dump(default_users, f, indent=2)
     
     # Run the Flask-SocketIO server on all interfaces (0.0.0.0) port 8080
-    print("OBS-TV-Animator WebSocket Server Starting...")
+    print("Angels-TV-Animator WebSocket Server Starting...")
     print("=" * 84)
     print(f"Available animations: {get_animation_files()}")
     print(f"Available videos: {get_video_files()}")

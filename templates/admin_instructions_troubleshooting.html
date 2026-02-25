@@ -1,14 +1,13 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OBS-TV-Animator - Troubleshooting & FAQ</title>
+    <title>Angels-TV-Animator - Troubleshooting & FAQ</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/OTA_favicon_round.png') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/ATA_favicon_round.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
     <link rel="stylesheet" href="../../static/css/admin_instructions.css">
 </head>
@@ -18,7 +17,7 @@
         <div class="header-left">
             <i class="fas fa-tv header-icon"></i>
             <div class="header-title">
-                <h1>OBS-TV-Animator</h1>
+                <h1>Angels-TV-Animator</h1>
                 <p>Troubleshooting & FAQ</p>
             </div>
         </div>
@@ -91,7 +90,7 @@
                 <i class="fa-solid fa-circle-check"></i>
                 <div>
                     <h4>Troubleshooting & FAQ Guide</h4>
-                    <p>Comprehensive solutions for common OBS-TV-Animator issues and questions.</p>
+                    <p>Comprehensive solutions for common Angels-TV-Animator issues and questions.</p>
                 </div>
             </div>
 
@@ -105,7 +104,7 @@
                         <label>
                             <input type="checkbox" class="diagnostic-checkbox" data-relates-to="docker,server">
                             <span class="checkmark"></span>
-                            Docker container is running (<code>docker ps</code> shows obs-tv-animator)
+                            Docker container is running (<code>docker ps</code> shows Angels-TV-Animator)
                         </label>
                     </div>
                     
@@ -207,7 +206,7 @@
                         </div>
                         <div class="faq-answer">
                             <p><strong>Check logs:</strong></p>
-                            <pre class="code-block">docker logs obs-tv-animator</pre>
+                            <pre class="code-block">docker logs Angels-TV-Animator</pre>
                             
                             <p><strong>Common solutions:</strong></p>
                             <ul>
@@ -256,8 +255,8 @@ lsof -i :[PORT]</pre>
                             </ul>
                             
                             <p><strong>Reset configuration:</strong></p>
-                            <pre class="code-block">docker exec -it obs-tv-animator ls -la /app/data/
-docker exec -it obs-tv-animator cat /app/data/config/users.json</pre>
+                            <pre class="code-block">docker exec -it Angels-TV-Animator ls -la /app/data/
+docker exec -it Angels-TV-Animator cat /app/data/config/users.json</pre>
                         </div>
                     </div>
                 </div>
@@ -352,14 +351,15 @@ docker exec -it obs-tv-animator cat /app/data/config/users.json</pre>
                             <ul>
                                 <li>Older Smart TVs have limited HTML5/CSS3 support</li>
                                 <li>Some animations may not work on all TV browsers</li>
-                                <li>JavaScript features might be restricted</li>
+                                <li>Some Smart TVs have built-in browsers that block JavaScript from running</li>
                             </ul>
                             
                             <p><strong>Solutions:</strong></p>
                             <ul>
+                                <li>We recommend <strong>Android TV</strong> or similar streaming devices with modern browsers</li>
                                 <li>Try simpler animations (basic CSS transforms instead of complex effects)</li>
                                 <li>Use video files instead of HTML animations</li>
-                                <li>Consider using a streaming device (Chromecast, Fire TV Stick) with a modern browser</li>
+                                <li>Test the URL on your PC or phone browser first — if it works there but not on your TV, your TV's browser is blocking JavaScript</li>
                             </ul>
                         </div>
                     </div>
@@ -402,9 +402,9 @@ docker exec -it obs-tv-animator cat /app/data/config/users.json</pre>
                             
                             <p><strong>Alternative solutions:</strong></p>
                             <ul>
+                                <li>We recommend <strong>Android TV</strong> or similar streaming devices with modern browsers</li>
                                 <li>Use a Chromecast or Fire TV Stick for better browser support</li>
                                 <li>Connect a laptop/computer directly to TV via HDMI</li>
-                                <li>Use the OBS browser source for preview while streaming</li>
                             </ul>
                         </div>
                     </div>
@@ -434,7 +434,7 @@ docker exec -it obs-tv-animator cat /app/data/config/users.json</pre>
                             <ul>
                                 <li>Manually refresh TV browser or restart TV browser app</li>
                                 <li>Check server logs for connection issues</li>
-                                <li>Verify WebSocket connections are established (future OBS integration)</li>
+                                <li>Verify OBS WebSocket connection is active (check <a href="/admin" class="inline-link">Dashboard</a> OBS status)</li>
                                 <li>Try accessing from TV's built-in browser vs external browser app</li>
                             </ul>
                         </div>
@@ -533,7 +533,7 @@ docker exec -it obs-tv-animator cat /app/data/config/users.json</pre>
                             
                             <p><strong>Example resource limits:</strong></p>
                             <pre class="code-block">services:
-  obs-tv-animator:
+  Angels-TV-Animator:
     # ... other config
     deploy:
       resources:
@@ -565,8 +565,8 @@ docker exec -it obs-tv-animator cat /app/data/config/users.json</pre>
                             </ul>
                             
                             <p><strong>Debug upload permissions:</strong></p>
-                            <pre class="code-block">docker exec -it obs-tv-animator ls -la /app/animations/
-docker exec -it obs-tv-animator ls -la /app/videos/</pre>
+                            <pre class="code-block">docker exec -it Angels-TV-Animator ls -la /app/animations/
+docker exec -it Angels-TV-Animator ls -la /app/videos/</pre>
                         </div>
                     </div>
 
@@ -605,7 +605,7 @@ docker exec -it obs-tv-animator ls -la /app/videos/</pre>
                         <h4><i class="fa-solid fa-exclamation-triangle"></i> Complete Reset</h4>
                         <p>If everything is broken and you need to start fresh:</p>
                         <pre class="code-block">docker-compose down
-docker volume rm obs-tv-animator_data
+docker volume rm Angels-TV-Animator_data
 docker-compose up -d</pre>
                         <p class="warning-text"><i class="fa-solid fa-exclamation-triangle"></i> This will delete all user accounts, settings, and uploaded files if you did not set up binds in the Docker Compose file!</p>
                     </div>
@@ -614,11 +614,11 @@ docker-compose up -d</pre>
                         <h4><i class="fa-solid fa-database"></i> Backup Important Data</h4>
                         <p>Before making major changes, backup your configuration and files:</p>
                         <pre class="code-block"># Backup configuration data
-docker cp obs-tv-animator:/app/data ./backup-data-$(date +%Y%m%d)
+docker cp Angels-TV-Animator:/app/data ./backup-data-$(date +%Y%m%d)
 
 # If you also need to backup animations and videos
-docker cp obs-tv-animator:/app/animations ./backup-animations-$(date +%Y%m%d)
-docker cp obs-tv-animator:/app/videos ./backup-videos-$(date +%Y%m%d)</pre>
+docker cp Angels-TV-Animator:/app/animations ./backup-animations-$(date +%Y%m%d)
+docker cp Angels-TV-Animator:/app/videos ./backup-videos-$(date +%Y%m%d)</pre>
                         
                         <p><strong>Alternative for bind mounts:</strong> If you set up folder binds in docker-compose.yml or Docker Desktop GUI, you can backup by simply copying the bound folders:</p>
                         <pre class="code-block"># Windows (copy to backup location)
@@ -637,11 +637,11 @@ cp -r /path/to/your/animations ./backup-animations-$(date +%Y%m%d)</pre>
 docker-compose down
 
 # Restore configuration data
-docker cp ./backup-data-YYYYMMDD/. obs-tv-animator:/app/data/
+docker cp ./backup-data-YYYYMMDD/. Angels-TV-Animator:/app/data/
 
 # Restore animations and videos if backed up
-docker cp ./backup-animations-YYYYMMDD/. obs-tv-animator:/app/animations/
-docker cp ./backup-videos-YYYYMMDD/. obs-tv-animator:/app/videos/
+docker cp ./backup-animations-YYYYMMDD/. Angels-TV-Animator:/app/animations/
+docker cp ./backup-videos-YYYYMMDD/. Angels-TV-Animator:/app/videos/
 
 # Start container
 docker-compose up -d</pre>
@@ -659,7 +659,7 @@ docker-compose up -d</pre>
                     <div class="help-item">
                         <h4><i class="fa-brands fa-github"></i> GitHub Issues</h4>
                         <p>For bugs, feature requests, or technical questions:</p>
-                        <a href="https://github.com/dalto8/obs-tv-animator/issues" target="_blank" class="btn-primary">
+                        <a href="https://github.com/dalto8/Angels-TV-Animator/issues" target="_blank" class="btn-primary">
                             <i class="fa-solid fa-external-link-alt"></i> Report an Issue
                         </a>
                     </div>
@@ -670,7 +670,7 @@ docker-compose up -d</pre>
                         <ul>
                             <li>Operating system (Windows/macOS/Linux)</li>
                             <li>Docker version (<code>docker --version</code>)</li>
-                            <li>Container logs (<code>docker logs obs-tv-animator</code>)</li>
+                            <li>Container logs (<code>docker logs Angels-TV-Animator</code>)</li>
                             <li>Smart TV model and browser app name</li>
                             <li>Network setup (router model, WiFi vs. wired)</li>
                             <li>Steps to reproduce the issue</li>
@@ -693,7 +693,7 @@ docker-compose up -d</pre>
     
     <!-- Footer -->
     <footer class="admin-footer">
-        <span>OBS-TV-Animator v{{ app_version }}</span>
+        <span>Angels-TV-Animator v{{ app_version }}</span>
     </footer>
     
     <!-- Include Socket.IO for real-time updates -->
