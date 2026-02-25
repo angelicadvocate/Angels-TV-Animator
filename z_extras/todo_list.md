@@ -3,18 +3,6 @@
 
 ## Priority: High (Security & Production Ready)
 
-- [ ] **Fix production deployment issues**
-  - Use eventlet or gevent, remove 'allow_unsafe_werkzeug=True' from app.py
-  - Replace development Flask server with proper production WSGI server (gunicorn)
-  - Update Docker configuration for production deployment
-
-- [ ] **Implement Password Security**
-  - **CRITICAL**: Replace plain text password storage with proper hashing
-  - Use `werkzeug.security.generate_password_hash` and `check_password_hash`
-  - Update user creation and authentication flows to use hashed passwords
-  - **Security Risk**: Currently passwords stored in plain text in users.json
-  - **Impact**: Essential for any production deployment or user sharing
-
 - [ ] **Add API Rate Limiting & Input Validation**
   - Implement Flask-Limiter for API endpoint protection against abuse
   - Add proper request validation for all API endpoints (file uploads, user management, triggers)
@@ -464,3 +452,28 @@ Make sure to update version numbers as MAJOR.MINOR.PATCH as needed when todo ite
   - Complete admin interface for OBS management and scene mapping configuration
   - Working file watcher system for automated animation changes
   - Integrated with existing animation trigger system (same logic as manual triggers)
+
+## 🚀 **MAJOR PROGRESS - February 25, 2026** ✨ *RECENTLY COMPLETED*
+
+- [x] **Password Security Implementation** ✨ *COMPLETED* **v0.8.6 → v0.9.0** - `github:AngelicAdvocate`
+  - **CRITICAL SECURITY FIX**: Replaced plain text password storage with industry-standard PBKDF2-SHA256 hashing
+  - Implemented `werkzeug.security.generate_password_hash` and `check_password_hash` for all password operations
+  - Added automatic migration system for existing plain text passwords to hashed format on first login
+  - Updated user creation flow (`api_add_user`) to hash passwords before storage
+  - Updated password change flow (`api_change_password`) to store hashed passwords
+  - Updated authentication (`verify_password`) to support both hashed and plain text (migration support)
+  - Fixed default admin account initialization to use hashed password
+  - **Security Documentation Added**:
+    - Added comprehensive security notice to README.md with local network usage guidelines
+    - Enhanced Getting Started page with expanded security recommendations section
+    - Added warning banner about local network only deployment
+    - Documented password security, network security, and firewall configuration best practices
+  - **Benefits**: Essential for production deployment, protects user credentials, follows industry security standards
+  - **Migration**: Existing users with plain text passwords will be automatically migrated to hashed versions on next login
+  - **Version Bump**: 0.8.6 → 0.9.0 (MINOR version increment for security feature addition)
+
+- [x] **Fix production deployment issues** ✨ *COMPLETED* **v0.9.0** - `github:AngelicAdvocate`
+  - Use eventlet or gevent, remove 'allow_unsafe_werkzeug=True' from app.py
+  - Replace development Flask server with proper production WSGI server (gunicorn)
+  - Update Docker configuration for production deployment
+  - **Resolution**: Added eventlet as async_mode for Flask-SocketIO, removed allow_unsafe_werkzeug flag, added eventlet==0.35.2 to requirements.txt, cleaned up duplicate startup block, fixed user initialization format with proper password hashing

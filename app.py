@@ -4,7 +4,12 @@ Angels-TV-Animator: A Flask-SocketIO server to display HTML/CSS/JS animations on
 Supports dynamic updates triggered via OBS WebSocket, StreamerBot, or REST API.
 """
 
-__version__ = "0.8.6"
+__version__ = "0.9.0"
+
+# CRITICAL: Eventlet monkey patching must happen BEFORE any other imports
+# This patches stdlib (socket, threading, time, etc.) for green thread compatibility
+import eventlet
+eventlet.monkey_patch()
 
 import json
 import os
@@ -17,6 +22,7 @@ from threading import Thread
 from flask import Flask, render_template, jsonify, request, send_from_directory, redirect, url_for, flash, session
 from flask_socketio import SocketIO, emit
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
 import asyncio
 from thumbnail_service import get_thumbnail_service
 import websockets
@@ -26,7 +32,7 @@ from obswebsocket import obsws, requests, events
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'angels-tv-animator-secret-key'
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=1)
-socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
 
 # Initialize Flask-Login
 login_manager = LoginManager()
@@ -90,11 +96,11 @@ def load_users_config():
     except Exception as e:
         print(f"Error loading users config: {e}")
     
-    # Default config if file doesn't exist
+    # Default config if file doesn't exist - use hashed password
     return {
         "admin_users": {
             "admin": {
-                "password": "admin123",
+                "password": generate_password_hash("admin123"),
                 "created_at": datetime.now().isoformat(),
                 "permissions": ["read", "write", "delete", "upload"]
             }
@@ -102,14 +108,28 @@ def load_users_config():
     }
 
 def verify_password(username, password):
-    """Verify user password"""
+    """Verify user password - supports both hashed and plain text (for migration)"""
     users_data = load_users_config()
     admin_users = users_data.get('admin_users', {})
     
     if username in admin_users:
         stored_password = admin_users[username]['password']
-        # In production, you'd want to hash passwords
-        return stored_password == password
+        
+        # Check if password is hashed (starts with pbkdf2:sha256: or similar)
+        if stored_password.startswith(('pbkdf2:', 'scrypt:', 'bcrypt:')):
+            # Use werkzeug's check_password_hash for hashed passwords
+            is_valid = check_password_hash(stored_password, password)
+            return is_valid
+        else:
+            # Plain text password - check and migrate to hashed
+            if stored_password == password:
+                # Migrate to hashed password
+                print(f"⚠️ Migrating plain text password to hashed for user: {username}")
+                admin_users[username]['password'] = generate_password_hash(password)
+                users_data['admin_users'] = admin_users
+                save_users_config(users_data)
+                return True
+            return False
     
     return False
 
@@ -1979,9 +1999,9 @@ def api_add_user():
         if username in admin_users:
             return jsonify({'success': False, 'error': 'Username already exists'}), 400
         
-        # Add new user
+        # Add new user with hashed password
         admin_users[username] = {
-            'password': password,  # In production, hash this!
+            'password': generate_password_hash(password),
             'created_at': datetime.now().isoformat(),
             'permissions': ['read', 'write', 'delete', 'upload'],
             'theme': 'dark'  # Default theme
@@ -2062,8 +2082,8 @@ def api_change_password():
         if current_user.username not in admin_users:
             return jsonify({'success': False, 'error': 'User not found'}), 404
         
-        # Update password
-        admin_users[current_user.username]['password'] = new_password  # In production, hash this!
+        # Update password with hashed version
+        admin_users[current_user.username]['password'] = generate_password_hash(new_password)
         users_data['admin_users'] = admin_users
         
         if save_users_config(users_data):
@@ -2602,77 +2622,6 @@ def debug_user_data():
         return jsonify({'error': str(e)}), 500
 
 
-if __name__ == '__main__':
-    # Ensure required directories exist
-    ANIMATIONS_DIR.mkdir(exist_ok=True)
-    VIDEOS_DIR.mkdir(exist_ok=True)
-    DATA_DIR.mkdir(exist_ok=True)
-    CONFIG_DIR.mkdir(exist_ok=True)
-    LOGS_DIR.mkdir(exist_ok=True)
-    
-    # Initialize state file if it doesn't exist
-    if not STATE_FILE.exists():
-        save_state({"current_animation": "anim1.html"})
-    
-    # Initialize users config if it doesn't exist
-    if not USERS_FILE.exists():
-        default_users = {
-            "admin_users": {
-                "admin": {
-                    "password": "admin123",
-                    "created_at": datetime.now().isoformat(),
-                    "permissions": ["read", "write", "delete", "upload"],
-                    "theme": "dark"
-                }
-            },
-            "session_config": {
-                "timeout_minutes": 60,
-                "remember_me_days": 7
-            }
-        }
-        with open(USERS_FILE, 'w', encoding='utf-8') as f:
-            json.dump(default_users, f, indent=2)
-    
-    # Run the Flask-SocketIO server on all interfaces (0.0.0.0) port 8080
-    print("Angels-TV-Animator WebSocket Server Starting...")
-    print("=" * 84)
-    print(f"Available animations: {get_animation_files()}")
-    print(f"Available videos: {get_video_files()}")
-    print("=" * 84)
-    print("🌐 HTTP API Routes:")
-    print("  GET  /               - Smart TV display (main animation endpoint)")
-    print("  GET  /admin          - Admin dashboard and file management")
-    print("  POST /trigger        - Update media via API (JSON: {\"animation\": \"file.html|mp4\"})")
-    print("  GET  /animations     - List available media files")
-    print("  GET  /health         - Health check endpoint")
-    print("=" * 84)
-    print("🔌 WebSocket Integration:")
-    print(f"  Socket.IO (port {MAIN_PORT}) - Real-time communication")
-    print("    • Admin dashboard updates")
-    print("    • Animation page refresh & status")
-    print("    • OTA Integration (/static/js/ota-integration.js)")
-    print(f"  Raw WebSocket (port {WEBSOCKET_PORT}) - StreamerBot compatibility")
-    print("    • Legacy integration support")
-    print("=" * 84)
-    print("📁 Media Storage:")
-    print(f"  Animations: {ANIMATIONS_DIR} ({len(get_animation_files())} files)")
-    print(f"  Videos: {VIDEOS_DIR} ({len(get_video_files())} files)")
-    print(f"  Data: {DATA_DIR} (users, settings, thumbnails)")
-    print("=" * 84)
-    print("🤖 StreamerBot Integration:")
-    print("  • Use 'StreamerBot C#' buttons in admin file management")
-    print("  • Copy ready-to-use C# code for each animation")
-    print("  • HTTP triggers also available for legacy setups")
-    print("  • Visit /admin/instructions/streamerbot-integration for setup guide")
-    print("=" * 84)
-    print("✨ Custom Animation Development:")
-    print("  • Add OTA Integration to your HTML files:")
-    print("    <link rel=\"stylesheet\" href=\"/static/css/ota-integration.css\">")
-    print("    <script src=\"/static/js/ota-integration.js\"></script>")
-    print("  • Enables status indicators, WebSocket sync, and page refresh")
-    print("  • Visit /admin/instructions/getting-started for complete guide")
-    print("=" * 84)
-
 
 # =============================================================================
 # OBS WebSocket API Routes
@@ -3173,30 +3122,13 @@ if __name__ == '__main__':
     # Create default admin user if users.json doesn't exist
     if not USERS_FILE.exists():
         print("Creating default admin user configuration...")
-        
-        # Generate secure random passwords for default users
-        import secrets
-        admin_password = secrets.token_urlsafe(12)  # Strong random password
-        viewer_password = secrets.token_urlsafe(8)   # Simpler random password
-        
         default_users = {
-            "admin": {
-                "password": admin_password,
-                "role": "admin",
-                "created": datetime.now().isoformat(),
-                "last_login": None
-            },
-            "viewer": {
-                "password": viewer_password,
-                "role": "viewer", 
-                "created": datetime.now().isoformat(),
-                "last_login": None
-            },
-            "config": {
-                "password_requirements": {
-                    "min_length": 6,
-                    "require_numbers": False,
-                    "require_symbols": False
+            "admin_users": {
+                "admin": {
+                    "password": generate_password_hash("admin123"),
+                    "created_at": datetime.now().isoformat(),
+                    "permissions": ["read", "write", "delete", "upload"],
+                    "theme": "dark"
                 }
             },
             "session_config": {
@@ -3206,6 +3138,8 @@ if __name__ == '__main__':
         }
         with open(USERS_FILE, 'w', encoding='utf-8') as f:
             json.dump(default_users, f, indent=2)
+        print("⚠️  Default admin credentials: admin / admin123")
+        print("⚠️  CHANGE THE DEFAULT PASSWORD IMMEDIATELY after first login!")
     
     # Run the Flask-SocketIO server on all interfaces (0.0.0.0) port 8080
     print("Angels-TV-Animator WebSocket Server Starting...")
@@ -3322,8 +3256,8 @@ if __name__ == '__main__':
         else:
             print("ℹ️  No OBS settings found - connection will be available when configured")
         
-        print("🚀 Starting Flask-SocketIO server...")
-        socketio.run(app, host='0.0.0.0', port=MAIN_PORT, debug=False, allow_unsafe_werkzeug=True)
+        print("🚀 Starting production server (eventlet)...")
+        socketio.run(app, host='0.0.0.0', port=MAIN_PORT, debug=False)
         
     except Exception as e:
         print(f"❌ FATAL ERROR during startup: {e}")

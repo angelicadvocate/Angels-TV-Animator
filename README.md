@@ -1,6 +1,8 @@
-# Angels-TV-Animator v0.8.6
+# Angels-TV-Animator v0.9.0
 
 > ⚠️ **This project is still in development and not production-ready.**
+> 
+> 🔒 **Security Notice:** This application is designed for **local network use only**. Do NOT expose it to the public internet. See Security Notice section below for details.
 
 A lightweight **Flask-SocketIO** server that displays HTML/CSS/JS animations or videos on a Smart TV — with real-time updates triggered via **OBS WebSocket**, **StreamerBot**, or **REST API**.  
 Upload and manage media entirely through the web-based admin panel, no manual file edits required.
@@ -66,7 +68,11 @@ You only need **one** of the following installed on your system:
    docker compose up -d --build
    ```
 
-   > 📡 **Port Note:** This application requires 2 ports - the main port (8080) for web interface & Socket.IO, and a raw WebSocket port (8081) for StreamerBot integration. The raw WebSocket port is always main port + 1. When changing the main port via `PORT` environment variable, ensure both ports are available.
+   > 📡 **Port Note:** This application uses **internal Docker ports 8080 and 8081** by default:
+   > - Port **8080**: Main web interface, admin panel, and Socket.IO  
+   > - Port **8081**: Raw WebSocket for StreamerBot integration (always main port + 1)
+   >
+   > These ports are used throughout the documentation. If you remap them in `docker-compose.yml` (e.g., `9000:8080`), use your **external mapped ports** instead of the defaults shown in examples.
 
 3. **Access the web interfaces:**
    - **Admin Panel:** http://[DOCKER_HOST_IP]:8080/admin
@@ -74,10 +80,7 @@ You only need **one** of the following installed on your system:
    - **Socket.IO API:** ws://[DOCKER_HOST_IP]:8080/socket.io/ *(Flask-SocketIO on main port)*
    - **Raw WebSocket:** ws://[DOCKER_HOST_IP]:8081/ *(StreamerBot integration)*
 
-4. **Check out the Getting Started page**
-  - From the admin panel click the button for "Setup/Instructions"
-  - Then click the "Getting Started" button on that page.
-  - These pages will contain additional information for setup and usage.
+   > 💡 **Remember:** If you remapped ports in docker-compose.yml, replace `8080` and `8081` with your custom ports.
 
 ### Default Login
 
@@ -85,6 +88,40 @@ You only need **one** of the following installed on your system:
 - **Password:** `admin123`
 
 > ⚠️ **Change this immediately in the Admin → Users page after first login.**
+
+### 🔒 Security Notice
+
+**Angels-TV-Animator is designed for local network use only.** This application is intended to run on a trusted local network (LAN) and should **NOT** be exposed to the public internet without additional security measures.
+
+**Important Security Considerations:**
+
+- **Local Network Only**: Deploy this application on your local network only (e.g., `192.168.x.x`, `10.x.x.x`)
+- **Do NOT expose ports to the internet**: Never forward ports 8080/8081 through your router to the internet
+- **Firewall Protection**: Ensure your network firewall blocks external access to these ports
+- **Password Security**: All passwords are now hashed using industry-standard PBKDF2-SHA256
+- **Network Responsibility**: You are responsible for your network's security configuration
+- **Trusted Devices Only**: Only connect trusted devices (your streaming PC, Smart TV, mobile devices) on the same network
+
+**Best Practices:**
+- Change default credentials immediately after first login
+- Use strong, unique passwords for all user accounts
+- Keep your Docker host and network router updated with security patches
+- Use a dedicated VLAN for streaming equipment if possible
+- Regularly review connected devices in the admin dashboard
+
+> 💡 **Bottom Line**: Think of this like a smart home device — it's secure on your local network, but should never be accessible from the internet.
+
+---
+
+## 📚 Next Steps: Setup & Instructions
+
+Once the container is running and you've logged into the admin panel:
+
+1. Click the **"Setup/Instructions"** button on the admin dashboard
+2. Review the **"Getting Started"** guide for detailed setup and usage instructions
+3. Check out **OBS Integration**, **StreamerBot Setup**, and **Troubleshooting** sections
+
+All configuration, integration guides, and best practices are available directly in the web UI.
 
 ---
 
@@ -152,8 +189,9 @@ The current animation or video will auto-play fullscreen. Changes appear instant
 ## 🧩 Developer Notes
 
 - Built with **Flask-SocketIO + Docker** for lightweight, real-time media control  
-- Default ports: **8080** (web interface, admin panel, socket.io) + **8081** (raw WebSocket for StreamerBot)
-- raw WebSocket port is automatically set to main port + 1
+- Internal Docker ports: **8080** (web interface, admin panel, socket.io) + **8081** (raw WebSocket for StreamerBot)
+- Raw WebSocket port is automatically set to main port + 1
+- All documentation assumes default internal ports; adjust accordingly if you remap ports in docker-compose.yml
 
 ---
 

@@ -204,13 +204,35 @@
                         <span class="step-number"><i class="fa-solid fa-shield-halved"></i></span>
                         <div class="step-content">
                             <h4>Security Recommendations</h4>
-                            <p><strong>Important:</strong> If you haven't already done so, we recommend changing the default username and password and removing the old admin account.</p>
+                            
+                            <div class="success-banner" style="background: rgba(255, 152, 0, 0.1); border-color: rgba(255, 152, 0, 0.3); margin-bottom: 15px;">
+                                <i class="fa-solid fa-shield-halved" style="color: #ff9800;"></i>
+                                <div>
+                                    <strong style="color: #ff9800;">Local Network Only</strong>
+                                    <p style="margin: 5px 0 0 0; font-size: 0.9rem;">Angels-TV-Animator is designed for local network use only. Do NOT expose it to the public internet.</p>
+                                </div>
+                            </div>
+                            
+                            <p><strong>Password Security:</strong> All passwords are now encrypted using industry-standard PBKDF2-SHA256 hashing. If you haven't already done so, we recommend changing the default credentials immediately.</p>
+                            
+                            <h5 style="margin-top: 15px;">Account Management:</h5>
                             <ul>
-                                <li>Create a new admin user with a strong, unique password</li>
+                                <li>Create a new admin user with a strong, unique password (minimum 6 characters)</li>
                                 <li>Log in with the new account to test it works</li>
                                 <li>Delete the default <code>admin</code> account for security</li>
                             </ul>
+                            
+                            <h5 style="margin-top: 15px;">Network Security:</h5>
+                            <ul>
+                                <li><strong>Never forward ports</strong> 8080/8081 through your router to the internet</li>
+                                <li>Ensure your firewall blocks external access to these ports</li>
+                                <li>Only use on trusted local networks (home/office LAN)</li>
+                                <li>Keep Docker and your streaming PC updated with security patches</li>
+                            </ul>
+                            
                             <p class="hint"><strong>Note:</strong> You cannot delete an account that's currently logged in. Switch to your new account first, then delete the default credentials.</p>
+                            
+                            <p class="hint" style="margin-top: 10px;"><strong>Bottom Line:</strong> Think of this like a smart home device — it's secure on your local network, but should never be accessible from the internet. You are responsible for your network's security configuration.</p>
                         </div>
                     </div>
                 </div>
