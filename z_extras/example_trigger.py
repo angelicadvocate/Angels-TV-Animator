@@ -16,7 +16,7 @@ def trigger_animation(animation_name, server_url="http://localhost:8080"):
     Trigger a specific animation on the server.
     
     Args:
-        animation_name: Name of the animation file (e.g., 'anim1.html')
+        animation_name: Name of the animation file (e.g., 'brb.html')
         server_url: Base URL of the Angels-TV-Animator server
     
     Returns:
@@ -58,7 +58,7 @@ def trigger_animation_websocket(animation_name, server_url="http://localhost:808
     Trigger a specific animation via WebSocket connection.
     
     Args:
-        animation_name: Name of the animation file (e.g., 'anim1.html')
+        animation_name: Name of the animation file (e.g., 'brb.html')
         server_url: Base URL of the Angels-TV-Animator server
     
     Returns:
@@ -239,7 +239,7 @@ if __name__ == "__main__":
         print("  video <action> [value]        - Control video playback")
         print("\nExamples:")
         print("  python example_trigger.py list")
-        print("  python example_trigger.py trigger anim2.html")
+        print("  python example_trigger.py trigger particles.html")
         print("  python example_trigger.py trigger video1.mp4")
         print("  python example_trigger.py websocket my_video.mp4")
         print("  python example_trigger.py scene Gaming")
@@ -257,7 +257,7 @@ if __name__ == "__main__":
     elif command == "trigger":
         if len(sys.argv) < 3:
             print("Error: Please specify animation name")
-            print("Example: python example_trigger.py trigger anim2.html")
+            print("Example: python example_trigger.py trigger particles.html")
             sys.exit(1)
         
         animation_name = sys.argv[2]
@@ -267,7 +267,7 @@ if __name__ == "__main__":
     elif command == "websocket":
         if len(sys.argv) < 3:
             print("Error: Please specify animation name")
-            print("Example: python example_trigger.py websocket anim2.html")
+            print("Example: python example_trigger.py websocket particles.html")
             sys.exit(1)
         
         animation_name = sys.argv[2]
@@ -284,10 +284,10 @@ if __name__ == "__main__":
         
         # Default scene-to-animation mapping
         default_mapping = {
-            "gaming": "anim1.html",
-            "chatting": "anim2.html", 
-            "brb": "anim3.html",
-            "be right back": "anim3.html"
+            "gaming": "particles.html",
+            "chatting": "chat_overlay.html", 
+            "brb": "brb.html",
+            "be right back": "brb.html"
         }
         
         result = trigger_scene_change_websocket(scene_name, animation_mapping=default_mapping)

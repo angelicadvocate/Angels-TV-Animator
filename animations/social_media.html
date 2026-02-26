@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--
+    ╔════════════════════════════════════════════════════════════════════════════╗
+    ║                   ANGELS-TV-ANIMATOR — SOCIAL MEDIA SCROLLER               ║
+    ╠════════════════════════════════════════════════════════════════════════════╣
+    ║                                                                            ║
+    ║  Displays your social media handles in an infinite scrolling ticker        ║
+    ║  on a customizable gradient background. Perfect for end-of-stream          ║
+    ║  screens, BRB screens, or "follow me" displays on your TV.                 ║
+    ║                                                                            ║
+    ║  HOW TO SET UP:                                                            ║
+    ║                                                                            ║
+    ║  STEP 1 — Set BACKGROUND_COLOR (name or number, same as other pages)       ║
+    ║                                                                            ║
+    ║  STEP 2 — Set SCROLL_SPEED (0 = stopped, 10 = very fast)                   ║
+    ║                                                                            ║
+    ║  STEP 3 — Set DISPLAY_NAME (your streamer name shown at the top,           ║
+    ║           or leave empty to hide it)                                       ║
+    ║                                                                            ║
+    ║  STEP 4 — Edit the SOCIALS array:                                          ║
+    ║    • Set "enabled: true" for platforms you use                             ║
+    ║    • Set "enabled: false" to hide platforms you don't use                  ║
+    ║    • Change "text" to your username/handle/link                            ║
+    ║    • The "icon" field uses Font Awesome class names (pre-filled)           ║
+    ║    • For custom entries with a logo IMAGE instead of an icon, set          ║
+    ║      "icon" to an image URL (starts with http). Example:                   ║
+    ║        { enabled: true, platform: "My Site",                               ║
+    ║          icon: "https://example.com/logo.png", text: "mysite.com" }        ║
+    ║                                                                            ║
+    ║  ADDING NEW PLATFORMS:                                                     ║
+    ║  Copy one of the existing entries in SOCIALS, change the values, and       ║
+    ║  set enabled to true. You can add as many as you want!                     ║
+    ║                                                                            ║
+    ╚════════════════════════════════════════════════════════════════════════════╝
+    -->
+
+    <title>Social Media — Angels-TV-Animator</title>
+
+    <!-- Font Awesome for social media icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- REQUIRED — Angels-TV-Animator Integration CSS -->
+    <link rel="stylesheet" href="/static/css/ata-integration.css">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ffffff;
+        }
+
+        /* ===== Fullscreen Layout ===== */
+        .social-wrapper {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* ===== Display Name Header ===== */
+        .display-name {
+            font-size: 120px;
+            font-weight: 800;
+            text-align: center;
+            text-shadow: 0 6px 40px rgba(0, 0, 0, 0.5);
+            margin-bottom: 16px;
+            letter-spacing: 4px;
+        }
+
+        .display-subtitle {
+            font-size: 48px;
+            font-weight: 300;
+            opacity: 0.6;
+            margin-bottom: 60px;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+        }
+
+        /* ===== Scroll Container ===== */
+        .scroll-container {
+            width: 100%;
+            overflow: hidden;
+            padding: 30px 0;
+        }
+
+        .scroll-track {
+            display: flex;
+            gap: 60px;
+            width: max-content;
+            will-change: transform;
+        }
+
+        .scroll-track.animating {
+            animation: scroll-left linear infinite;
+        }
+
+        @keyframes scroll-left {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* ===== Social Card ===== */
+        .social-card {
+            display: flex;
+            align-items: center;
+            gap: 36px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.12);
+            border-radius: 30px;
+            padding: 40px 60px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            transition: background 0.3s ease;
+        }
+
+        .social-card:hover {
+            background: rgba(255, 255, 255, 0.14);
+        }
+
+        .social-icon {
+            font-size: 72px;
+            width: 80px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .social-icon img {
+            width: 76px;
+            height: 76px;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+
+        .social-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .social-platform {
+            font-size: 26px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            opacity: 0.5;
+        }
+
+        .social-text {
+            font-size: 48px;
+            font-weight: 500;
+        }
+
+        /* ===== Setup message ===== */
+        .setup-message {
+            text-align: center;
+            padding: 80px;
+            max-width: 900px;
+        }
+
+        .setup-message h1 {
+            font-size: 64px;
+            font-weight: 700;
+            margin: 0 0 24px 0;
+            text-shadow: 0 2px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .setup-message p {
+            font-size: 32px;
+            line-height: 1.6;
+            opacity: 0.8;
+            margin: 0 0 14px 0;
+        }
+
+        .setup-message code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="social-wrapper" id="mainElement">
+        <!-- Content rendered by JavaScript -->
+    </div>
+
+    <!-- REQUIRED — Integration Scripts (DO NOT REMOVE) -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="/static/js/ata-integration.js"></script>
+
+    <script>
+        // =====================================================================
+        //  ★  STEP 1: SET YOUR BACKGROUND COLOR  ★
+        //
+        //      "PURPLE"  or "1"       "PINK"    or "6"
+        //      "BLUE"    or "2"       "TEAL"    or "7"
+        //      "GREEN"   or "3"       "DARK"    or "8"
+        //      "RED"     or "4"       "SUNSET"  or "9"
+        //      "ORANGE"  or "5"       "OCEAN"   or "10"
+        //
+        // =====================================================================
+        const BACKGROUND_COLOR = "PURPLE";
+
+        // =====================================================================
+        //  ★  STEP 2: SET SCROLL SPEED  ★
+        //
+        //      0  = stopped (no scrolling, cards stay centered on screen)
+        //      1  = very slow crawl
+        //      5  = moderate (default — good for most setups)
+        //      10 = very fast
+        //
+        // =====================================================================
+        const SCROLL_SPEED = 5;
+
+        // =====================================================================
+        //  ★  STEP 3: SET YOUR DISPLAY NAME  ★
+        //
+        //  Shown at the top of the screen. Leave empty ("") to hide.
+        //
+        //  Examples:
+        //      "YourStreamerName"
+        //      "Follow Me!"
+        //      ""   (hidden)
+        // =====================================================================
+        const DISPLAY_NAME = "YourNameHere";
+
+        // =====================================================================
+        //  ★  STEP 4: CONFIGURE YOUR SOCIAL MEDIA ACCOUNTS  ★
+        //
+        //  For each platform:
+        //    enabled  — true to show, false to hide
+        //    platform — the platform label shown above your username
+        //    icon     — Font Awesome class (pre-filled) OR an image URL
+        //    text     — your username, handle, or link
+        //
+        //  To use a custom logo IMAGE instead of an icon:
+        //    icon: "https://example.com/my-logo.png"
+        //
+        //  To add a new platform, copy any entry and change the values.
+        // =====================================================================
+        const SOCIALS = [
+            { enabled: true,  platform: "Twitch",     icon: "fa-brands fa-twitch",        text: "YourTwitchName" },
+            { enabled: true,  platform: "YouTube",    icon: "fa-brands fa-youtube",        text: "YourYouTubeName" },
+            { enabled: false, platform: "Twitter / X",icon: "fa-brands fa-x-twitter",      text: "@YourHandle" },
+            { enabled: false, platform: "Discord",    icon: "fa-brands fa-discord",         text: "discord.gg/YourInvite" },
+            { enabled: false, platform: "TikTok",     icon: "fa-brands fa-tiktok",          text: "@YourTikTok" },
+            { enabled: false, platform: "Instagram",  icon: "fa-brands fa-instagram",       text: "@YourInstagram" },
+            { enabled: false, platform: "Kick",       icon: "fa-brands fa-kickstarter",     text: "YourKickName" },
+            { enabled: false, platform: "Facebook",   icon: "fa-brands fa-facebook",        text: "YourFacebookPage" },
+            { enabled: false, platform: "Bluesky",    icon: "fa-brands fa-bluesky",         text: "handle.bsky.social" },
+            { enabled: false, platform: "Threads",    icon: "fa-brands fa-threads",         text: "@YourThreads" },
+            { enabled: false, platform: "Reddit",     icon: "fa-brands fa-reddit-alien",    text: "r/YourSubreddit" },
+            { enabled: false, platform: "GitHub",     icon: "fa-brands fa-github",          text: "YourGitHub" },
+            { enabled: false, platform: "LinkedIn",   icon: "fa-brands fa-linkedin",        text: "YourLinkedIn" },
+            { enabled: false, platform: "Spotify",    icon: "fa-brands fa-spotify",         text: "YourSpotify" },
+
+            // ★ CUSTOM — Add your own entries below! ★
+            // Use a Font Awesome icon class:
+            // { enabled: true, platform: "Website", icon: "fa-solid fa-globe", text: "mywebsite.com" },
+            //
+            // Or use a full image URL for a custom logo:
+            // { enabled: true, platform: "My Brand", icon: "https://example.com/logo.png", text: "mybrand.com" },
+        ];
+
+
+        // ===== Color Gradient Map =====
+        const GRADIENTS = {
+            "PURPLE": "linear-gradient(160deg, #0f0c29 0%, #302b63 50%, #24243e 100%)",
+            "1":      "linear-gradient(160deg, #0f0c29 0%, #302b63 50%, #24243e 100%)",
+            "BLUE":   "linear-gradient(160deg, #0a1628 0%, #1a3a6b 50%, #0d2137 100%)",
+            "2":      "linear-gradient(160deg, #0a1628 0%, #1a3a6b 50%, #0d2137 100%)",
+            "GREEN":  "linear-gradient(160deg, #0a2910 0%, #1b5e20 50%, #0d3318 100%)",
+            "3":      "linear-gradient(160deg, #0a2910 0%, #1b5e20 50%, #0d3318 100%)",
+            "RED":    "linear-gradient(160deg, #2a0a0a 0%, #8b1a1a 50%, #3d0e0e 100%)",
+            "4":      "linear-gradient(160deg, #2a0a0a 0%, #8b1a1a 50%, #3d0e0e 100%)",
+            "ORANGE": "linear-gradient(160deg, #2a1a05 0%, #c75b00 50%, #3d2008 100%)",
+            "5":      "linear-gradient(160deg, #2a1a05 0%, #c75b00 50%, #3d2008 100%)",
+            "PINK":   "linear-gradient(160deg, #2a0a20 0%, #b0348a 50%, #3d0e2e 100%)",
+            "6":      "linear-gradient(160deg, #2a0a20 0%, #b0348a 50%, #3d0e2e 100%)",
+            "TEAL":   "linear-gradient(160deg, #042f2e 0%, #0d9488 50%, #064e3b 100%)",
+            "7":      "linear-gradient(160deg, #042f2e 0%, #0d9488 50%, #064e3b 100%)",
+            "DARK":   "linear-gradient(160deg, #0a0a0a 0%, #1c1c1c 50%, #111111 100%)",
+            "8":      "linear-gradient(160deg, #0a0a0a 0%, #1c1c1c 50%, #111111 100%)",
+            "SUNSET": "linear-gradient(160deg, #3d1208 0%, #e65100 30%, #d81b60 70%, #2a0a20 100%)",
+            "9":      "linear-gradient(160deg, #3d1208 0%, #e65100 30%, #d81b60 70%, #2a0a20 100%)",
+            "OCEAN":  "linear-gradient(160deg, #0a2342 0%, #1565c0 30%, #00838f 70%, #0a2a2a 100%)",
+            "10":     "linear-gradient(160deg, #0a2342 0%, #1565c0 30%, #00838f 70%, #0a2a2a 100%)",
+        };
+
+
+        // ===== Build a social card HTML =====
+        function buildCard(social) {
+            const isImageURL = social.icon.startsWith('http');
+            const iconHTML = isImageURL
+                ? `<img src="${social.icon}" alt="${social.platform}">`
+                : `<i class="${social.icon}"></i>`;
+
+            return `
+                <div class="social-card">
+                    <div class="social-icon">${iconHTML}</div>
+                    <div class="social-info">
+                        <span class="social-platform">${social.platform}</span>
+                        <span class="social-text">${social.text}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+
+        // ===== Initialize =====
+        document.addEventListener('DOMContentLoaded', () => {
+            const wrapper = document.getElementById('mainElement');
+
+            // Set background
+            const key = BACKGROUND_COLOR.toUpperCase().trim();
+            document.body.style.background = GRADIENTS[key] || GRADIENTS["PURPLE"];
+
+            // Filter to enabled socials only
+            const activeSocials = SOCIALS.filter(s => s.enabled);
+
+            if (activeSocials.length === 0) {
+                wrapper.innerHTML = `
+                    <div class="setup-message">
+                        <h1>📱 Social Media Scroller</h1>
+                        <p>To display your socials, open this file and set
+                           <code>enabled: true</code> on the platforms you use
+                           in the SOCIALS array.</p>
+                        <p>Then change the <code>text</code> field to your
+                           username or handle for each platform.</p>
+                    </div>
+                `;
+                window.ataIntegration = new ATAIntegration('mainElement');
+                return;
+            }
+
+            // Build header
+            let headerHTML = '';
+            if (DISPLAY_NAME && DISPLAY_NAME.trim() !== '') {
+                headerHTML = `
+                    <div class="display-name">${DISPLAY_NAME}</div>
+                    <div class="display-subtitle">Follow &amp; Connect</div>
+                `;
+            }
+
+            // Build cards
+            const cardsHTML = activeSocials.map(buildCard).join('');
+
+            // Render one set first so we can measure its width
+            wrapper.innerHTML = `
+                ${headerHTML}
+                <div class="scroll-container">
+                    <div class="scroll-track" id="scrollTrack">
+                        ${cardsHTML}
+                    </div>
+                </div>
+            `;
+
+            // Apply scroll animation
+            const track = document.getElementById('scrollTrack');
+
+            if (SCROLL_SPEED > 0) {
+                // Measure width of one set of cards
+                const oneSetWidth = track.scrollWidth;
+                const viewportWidth = window.innerWidth;
+
+                // Repeat cards enough times so one "half" fills at least the
+                // full viewport — this ensures the duplicate copy always starts
+                // off-screen to the right and scrolls in seamlessly.
+                const repeats = Math.max(1, Math.ceil((viewportWidth + 60) / (oneSetWidth + 60)));
+                let fullSetHTML = '';
+                for (let i = 0; i < repeats; i++) {
+                    fullSetHTML += cardsHTML;
+                }
+
+                // Duplicate the full set for a seamless infinite loop
+                track.innerHTML = fullSetHTML + fullSetHTML;
+
+                // Speed 1 = 60s per loop, Speed 10 = 6s per loop
+                const duration = Math.max(6, 66 - (SCROLL_SPEED * 6));
+                track.style.animationDuration = duration + 's';
+                track.classList.add('animating');
+            } else {
+                // Speed 0: no scroll, center the cards
+                track.style.justifyContent = 'center';
+                track.style.display = 'flex';
+                track.style.flexWrap = 'wrap';
+                track.style.gap = '30px';
+                track.style.justifyContent = 'center';
+                // Remove duplicates when not scrolling
+                track.innerHTML = cardsHTML;
+                document.querySelector('.scroll-container').style.display = 'flex';
+                document.querySelector('.scroll-container').style.justifyContent = 'center';
+            }
+
+            // ATA integration
+            window.ataIntegration = new ATAIntegration('mainElement');
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--
+    ╔════════════════════════════════════════════════════════════════════════════╗
+    ║                   ANGELS-TV-ANIMATOR — RAID ALERT                          ║
+    ╠════════════════════════════════════════════════════════════════════════════╣
+    ║                                                                            ║
+    ║  Displays a fullscreen raid welcome message with animated floating text    ║
+    ║  over a customizable gradient background.                                  ║
+    ║                                                                            ║
+    ║  STEP 1 — SET YOUR BACKGROUND COLOR:                                       ║
+    ║  Find the BACKGROUND_COLOR variable in the <script> section and set it     ║
+    ║  to a color name or number from the list below:                            ║
+    ║                                                                            ║
+    ║      Name        Number    Description                                     ║
+    ║      ─────────   ──────    ──────────────────────────                      ║
+    ║      "PURPLE"    "1"       Purple/indigo gradient (default)                ║
+    ║      "BLUE"      "2"       Deep blue gradient                              ║
+    ║      "GREEN"     "3"       Emerald green gradient                          ║
+    ║      "RED"       "4"       Red/crimson gradient                            ║
+    ║      "ORANGE"    "5"       Warm orange/amber gradient                      ║
+    ║      "PINK"      "6"       Pink/magenta gradient                           ║
+    ║      "TEAL"      "7"       Teal/cyan gradient                              ║
+    ║      "DARK"      "8"       Nearly black/charcoal gradient                  ║
+    ║      "SUNSET"    "9"       Orange-to-pink sunset gradient                  ║
+    ║      "OCEAN"     "10"      Aqua-to-deep-blue ocean gradient                ║
+    ║                                                                            ║
+    ║  STEP 2 — CUSTOMIZE YOUR TEXT:                                             ║
+    ║  Find the MAIN_TEXT and SUB_TEXT variables in the <script> section and     ║
+    ║  change them to whatever you'd like displayed on screen.                   ║
+    ║                                                                            ║
+    ║      MAIN_TEXT — The large headline text (e.g., "Welcome Raiders!")        ║
+    ║      SUB_TEXT  — Smaller text below it (e.g., "Thanks for joining us!")    ║
+    ║                                                                            ║
+    ║  Set SUB_TEXT to "" (empty) to hide the subtitle entirely.                 ║
+    ║                                                                            ║
+    ╚════════════════════════════════════════════════════════════════════════════╝
+    -->
+
+    <title>Raid Alert — Angels-TV-Animator</title>
+
+    <!-- REQUIRED — Angels-TV-Animator Integration CSS -->
+    <link rel="stylesheet" href="/static/css/ata-integration.css">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* ===== Fullscreen container ===== */
+        .raid-wrapper {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* ===== Floating text container ===== */
+        .raid-text {
+            text-align: center;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .raid-main {
+            font-size: 130px;
+            font-weight: 800;
+            color: #ffffff;
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            margin: 0 0 20px 0;
+            line-height: 1.1;
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        .raid-sub {
+            font-size: 48px;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.85);
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+            margin: 0;
+            letter-spacing: 3px;
+        }
+
+        /* ===== Floating animation — gentle bob up and down ===== */
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) scale(1);
+            }
+            25% {
+                transform: translateY(-35px) rotate(1deg) scale(1.03);
+            }
+            50% {
+                transform: translateY(0px) scale(1);
+            }
+            75% {
+                transform: translateY(25px) rotate(-1deg) scale(0.98);
+            }
+        }
+
+        /* ===== Glow pulse — uses filter so emojis animate smoothly ===== */
+        @keyframes glow {
+            0% {
+                filter:
+                    drop-shadow(0 0 15px rgba(255, 255, 255, 0.3))
+                    drop-shadow(0 0 30px rgba(255, 255, 255, 0.1));
+            }
+            100% {
+                filter:
+                    drop-shadow(0 0 40px rgba(255, 255, 255, 0.7))
+                    drop-shadow(0 0 80px rgba(255, 255, 255, 0.3))
+                    drop-shadow(0 0 120px rgba(255, 255, 255, 0.1));
+            }
+        }
+
+        /* ===== Sparkle particles ===== */
+        .sparkle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0;
+            pointer-events: none;
+            animation: sparkle-float linear infinite;
+        }
+
+        @keyframes sparkle-float {
+            0% {
+                opacity: 0;
+                transform: translateY(0) scale(0);
+            }
+            10% {
+                opacity: 0.8;
+                transform: translateY(-20px) scale(1);
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-200px) scale(0.5);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="raid-wrapper" id="mainElement">
+        <!-- Content rendered by JavaScript -->
+    </div>
+
+    <!-- REQUIRED — Integration Scripts (DO NOT REMOVE) -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="/static/js/ata-integration.js"></script>
+
+    <script>
+        // =====================================================================
+        //  ★  STEP 1: SET YOUR BACKGROUND COLOR  ★
+        //
+        //  Use a color NAME or NUMBER from the list below:
+        //
+        //      "PURPLE"  or "1"   — Purple / indigo (default)
+        //      "BLUE"    or "2"   — Deep blue
+        //      "GREEN"   or "3"   — Emerald green
+        //      "RED"     or "4"   — Red / crimson
+        //      "ORANGE"  or "5"   — Warm orange / amber
+        //      "PINK"    or "6"   — Pink / magenta
+        //      "TEAL"    or "7"   — Teal / cyan
+        //      "DARK"    or "8"   — Nearly black / charcoal
+        //      "SUNSET"  or "9"   — Orange-to-pink sunset
+        //      "OCEAN"   or "10"  — Aqua-to-deep-blue ocean
+        //
+        // =====================================================================
+        const BACKGROUND_COLOR = "PURPLE";
+
+        // =====================================================================
+        //  ★  STEP 2: CUSTOMIZE YOUR TEXT  ★
+        //
+        //  MAIN_TEXT — The big headline shown on screen
+        //  SUB_TEXT  — Smaller text below it (set to "" to hide)
+        //
+        // =====================================================================
+        const MAIN_TEXT = "🎉 Welcome Raiders! 🎉";
+        const SUB_TEXT  = "Thanks for stopping by!";
+
+
+        // ===== Color Gradient Map =====
+        const GRADIENTS = {
+            "PURPLE": "linear-gradient(160deg, #0f0c29 0%, #302b63 50%, #24243e 100%)",
+            "1":      "linear-gradient(160deg, #0f0c29 0%, #302b63 50%, #24243e 100%)",
+            "BLUE":   "linear-gradient(160deg, #0a1628 0%, #1a3a6b 50%, #0d2137 100%)",
+            "2":      "linear-gradient(160deg, #0a1628 0%, #1a3a6b 50%, #0d2137 100%)",
+            "GREEN":  "linear-gradient(160deg, #0a2910 0%, #1b5e20 50%, #0d3318 100%)",
+            "3":      "linear-gradient(160deg, #0a2910 0%, #1b5e20 50%, #0d3318 100%)",
+            "RED":    "linear-gradient(160deg, #2a0a0a 0%, #8b1a1a 50%, #3d0e0e 100%)",
+            "4":      "linear-gradient(160deg, #2a0a0a 0%, #8b1a1a 50%, #3d0e0e 100%)",
+            "ORANGE": "linear-gradient(160deg, #2a1a05 0%, #c75b00 50%, #3d2008 100%)",
+            "5":      "linear-gradient(160deg, #2a1a05 0%, #c75b00 50%, #3d2008 100%)",
+            "PINK":   "linear-gradient(160deg, #2a0a20 0%, #b0348a 50%, #3d0e2e 100%)",
+            "6":      "linear-gradient(160deg, #2a0a20 0%, #b0348a 50%, #3d0e2e 100%)",
+            "TEAL":   "linear-gradient(160deg, #042f2e 0%, #0d9488 50%, #064e3b 100%)",
+            "7":      "linear-gradient(160deg, #042f2e 0%, #0d9488 50%, #064e3b 100%)",
+            "DARK":   "linear-gradient(160deg, #0a0a0a 0%, #1c1c1c 50%, #111111 100%)",
+            "8":      "linear-gradient(160deg, #0a0a0a 0%, #1c1c1c 50%, #111111 100%)",
+            "SUNSET": "linear-gradient(160deg, #3d1208 0%, #e65100 30%, #d81b60 70%, #2a0a20 100%)",
+            "9":      "linear-gradient(160deg, #3d1208 0%, #e65100 30%, #d81b60 70%, #2a0a20 100%)",
+            "OCEAN":  "linear-gradient(160deg, #0a2342 0%, #1565c0 30%, #00838f 70%, #0a2a2a 100%)",
+            "10":     "linear-gradient(160deg, #0a2342 0%, #1565c0 30%, #00838f 70%, #0a2a2a 100%)",
+        };
+
+        // ===== Create sparkle particles for background flair =====
+        function createSparkles(container, count) {
+            for (let i = 0; i < count; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.style.left = Math.random() * 100 + '%';
+                sparkle.style.top = (30 + Math.random() * 60) + '%';
+                sparkle.style.animationDuration = (3 + Math.random() * 4) + 's';
+                sparkle.style.animationDelay = (Math.random() * 5) + 's';
+                sparkle.style.width = (3 + Math.random() * 5) + 'px';
+                sparkle.style.height = sparkle.style.width;
+                container.appendChild(sparkle);
+            }
+        }
+
+        // ===== Initialize =====
+        document.addEventListener('DOMContentLoaded', () => {
+            const wrapper = document.getElementById('mainElement');
+
+            // Set background gradient
+            const key = BACKGROUND_COLOR.toUpperCase().trim();
+            document.body.style.background = GRADIENTS[key] || GRADIENTS["PURPLE"];
+
+            // Build text content
+            const subHTML = SUB_TEXT.trim()
+                ? `<p class="raid-sub">${SUB_TEXT}</p>`
+                : '';
+
+            wrapper.innerHTML = `
+                <div class="raid-text">
+                    <h1 class="raid-main">${MAIN_TEXT}</h1>
+                    ${subHTML}
+                </div>
+            `;
+
+            // Add background sparkle particles
+            createSparkles(wrapper, 25);
+
+            // ATA integration
+            window.ataIntegration = new ATAIntegration('mainElement');
+        });
+    </script>
+
+</body>
+</html>

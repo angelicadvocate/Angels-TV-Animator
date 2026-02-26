@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--
+    ╔════════════════════════════════════════════════════════════════════════════╗
+    ║                ANGELS-TV-ANIMATOR — PARTICLE / AMBIENT BACKGROUND          ║
+    ╠════════════════════════════════════════════════════════════════════════════╣
+    ║                                                                            ║
+    ║  A beautiful fullscreen particle animation for your TV display.            ║
+    ║  Choose from 4 built-in effects — just set PARTICLE_EFFECT to 1–4.         ║
+    ║  Uses tsParticles for smooth, GPU-friendly rendering.                      ║
+    ║                                                                            ║
+    ║  HOW TO CUSTOMIZE:                                                         ║
+    ║  Find the PARTICLE_EFFECT variable in the <script> section and set it:     ║
+    ║                                                                            ║
+    ║      Effect    Description                                                 ║
+    ║      ──────    ──────────────────────────────────────                      ║
+    ║      1         Starfield — slow-drifting white dots in deep space          ║
+    ║      2         Fireflies — warm gold/green particles floating gently       ║
+    ║      3         Snow — white flakes drifting downward                       ║
+    ║      4         Matrix Rain — green particles falling in columns            ║
+    ║                                                                            ║
+    ║  The background color automatically matches the chosen effect, but you     ║
+    ║  can override it with the BACKGROUND_OVERRIDE variable if you want.        ║
+    ║                                                                            ║
+    ╚════════════════════════════════════════════════════════════════════════════╝
+    -->
+
+    <title>Particle Background — Angels-TV-Animator</title>
+
+    <!-- REQUIRED — Angels-TV-Animator Integration CSS -->
+    <link rel="stylesheet" href="/static/css/ata-integration.css">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        #tsparticles {
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="tsparticles"></div>
+    <div id="mainElement" style="position:absolute;top:0;left:0;width:100vw;height:100vh;pointer-events:none;"></div>
+
+    <!-- tsParticles library (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+
+    <!-- REQUIRED — Integration Scripts (DO NOT REMOVE) -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="/static/js/ata-integration.js"></script>
+
+    <script>
+        // =====================================================================
+        //  ★  CHOOSE YOUR PARTICLE EFFECT (1–4)  ★
+        //
+        //      1  —  Starfield (slow-drifting white dots in deep space)
+        //      2  —  Fireflies (warm gold/green particles, gentle float)
+        //      3  —  Snow (white flakes drifting downward)
+        //      4  —  Matrix Rain (green particles falling in columns)
+        //
+        // =====================================================================
+        const PARTICLE_EFFECT = 1;
+
+        // =====================================================================
+        //  (Optional) Override the background color.
+        //  Leave as "" to use the effect's default background.
+        //  Example: "#1a1a2e" or "rgb(10, 10, 30)"
+        // =====================================================================
+        const BACKGROUND_OVERRIDE = "";
+
+
+        // ============================================================
+        //  Effect presets — each returns a tsParticles config object
+        // ============================================================
+
+        function getStarfieldConfig() {
+            return {
+                background: { color: BACKGROUND_OVERRIDE || "#0a0a1a" },
+                particles: {
+                    number: { value: 180, density: { enable: true, area: 800 } },
+                    color: { value: "#ffffff" },
+                    shape: { type: "circle" },
+                    opacity: {
+                        value: { min: 0.1, max: 0.8 },
+                        animation: { enable: true, speed: 0.4, minimumValue: 0.05, sync: false }
+                    },
+                    size: {
+                        value: { min: 0.5, max: 3 },
+                        animation: { enable: true, speed: 1, minimumValue: 0.3, sync: false }
+                    },
+                    move: {
+                        enable: true,
+                        speed: { min: 0.2, max: 0.8 },
+                        direction: "none",
+                        outModes: { default: "out" },
+                        straight: false
+                    },
+                    links: {
+                        enable: true,
+                        distance: 120,
+                        color: "#ffffff",
+                        opacity: 0.06,
+                        width: 1
+                    }
+                },
+                detectRetina: true
+            };
+        }
+
+        function getFirefliesConfig() {
+            return {
+                background: { color: BACKGROUND_OVERRIDE || "#0d1b0e" },
+                particles: {
+                    number: { value: 60, density: { enable: true, area: 800 } },
+                    color: { value: ["#ffda44", "#b8e986", "#ffa726", "#c6ff00"] },
+                    shape: { type: "circle" },
+                    opacity: {
+                        value: { min: 0, max: 0.9 },
+                        animation: { enable: true, speed: 0.6, minimumValue: 0, sync: false }
+                    },
+                    size: {
+                        value: { min: 2, max: 6 },
+                        animation: { enable: true, speed: 1.5, minimumValue: 1, sync: false }
+                    },
+                    move: {
+                        enable: true,
+                        speed: { min: 0.3, max: 1.2 },
+                        direction: "none",
+                        outModes: { default: "out" },
+                        straight: false,
+                        random: true
+                    },
+                    shadow: {
+                        enable: true,
+                        color: "#ffda44",
+                        blur: 15
+                    }
+                },
+                detectRetina: true
+            };
+        }
+
+        function getSnowConfig() {
+            return {
+                background: { color: BACKGROUND_OVERRIDE || "#1a2332" },
+                particles: {
+                    number: { value: 200, density: { enable: true, area: 800 } },
+                    color: { value: "#ffffff" },
+                    shape: { type: "circle" },
+                    opacity: {
+                        value: { min: 0.2, max: 0.8 },
+                        animation: { enable: false }
+                    },
+                    size: {
+                        value: { min: 1, max: 5 },
+                        animation: { enable: true, speed: 1, minimumValue: 0.5, sync: false }
+                    },
+                    move: {
+                        enable: true,
+                        speed: { min: 0.5, max: 2 },
+                        direction: "bottom",
+                        outModes: { default: "out" },
+                        straight: false,
+                        drift: { min: -0.5, max: 0.5 }
+                    },
+                    wobble: {
+                        enable: true,
+                        distance: 10,
+                        speed: { min: -2, max: 2 }
+                    }
+                },
+                detectRetina: true
+            };
+        }
+
+        function getMatrixConfig() {
+            return {
+                background: { color: BACKGROUND_OVERRIDE || "#000000" },
+                particles: {
+                    number: { value: 120, density: { enable: true, area: 600 } },
+                    color: { value: ["#00ff41", "#00cc33", "#009926", "#00ff80"] },
+                    shape: { type: "char", options: { char: { value: ["0","1","ア","カ","サ","タ","ナ","ハ","マ","ヤ","ラ","ワ"], font: "monospace", weight: "400" } } },
+                    opacity: {
+                        value: { min: 0.1, max: 0.9 },
+                        animation: { enable: true, speed: 1, minimumValue: 0, sync: false }
+                    },
+                    size: {
+                        value: { min: 8, max: 18 }
+                    },
+                    move: {
+                        enable: true,
+                        speed: { min: 2, max: 6 },
+                        direction: "bottom",
+                        outModes: { default: "out" },
+                        straight: true
+                    }
+                },
+                detectRetina: true
+            };
+        }
+
+        // ============================================================
+        //  Initialize
+        // ============================================================
+        const CONFIGS = { 1: getStarfieldConfig, 2: getFirefliesConfig, 3: getSnowConfig, 4: getMatrixConfig };
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const configFn = CONFIGS[PARTICLE_EFFECT] || CONFIGS[1];
+            await tsParticles.load("tsparticles", configFn());
+
+            // ATA integration
+            window.ataIntegration = new ATAIntegration('mainElement');
+        });
+    </script>
+
+</body>
+</html>

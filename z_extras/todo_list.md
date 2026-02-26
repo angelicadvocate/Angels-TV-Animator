@@ -1,74 +1,86 @@
 
 # Angels-TV-Animator TODO List
 
-## Priority: Medium (Integration & Features)
-
-- [ ] **Add Configuration Management System**
-  - *(Partially addressed: `config.py` module created during modular refactor with centralized constants/paths)*
-  - Use environment variables for sensitive data (ports, secrets, OBS passwords)
-  - Consider `python-dotenv` for local development configuration
-  - **Benefits**: Better deployment flexibility, security, environment separation
-
 ## Priority: Low (Code Organization & Cleanup)
 
-- [ ] **Create Reusable Header Template for Admin Pages**
-  - Extract common header structure from admin templates into `templates/partials/admin_header.html`
-  - Current duplication: Header code is repeated across 5+ admin templates (dashboard, manage, users, obs_management, etc.)
-  - **Benefits**: DRY principles, easier maintenance, consistent navigation across all admin pages
-  - **Implementation**: Create parameterized header partial with page title and conditional button visibility
-  - **Scope**: Only page titles and specific action buttons differ between templates - everything else identical
-  - **Priority**: Low - architectural improvement for better maintainability
+- [ ] **Add Images & GIF Animations to Instructions Pages**
+  - Create screenshots and GIF walkthroughs for Getting Started, StreamerBot, OBS, and Troubleshooting pages
+  - Store images in `static/assets/` directory (already exists)
+  - Topics to capture: admin dashboard overview, file management workflow, OBS connection setup, scene mapping configuration, StreamerBot action creation, mobile control interface
+  - Use GIFs to demonstrate multi-step workflows (e.g., drag-and-drop upload, animation switching, OBS scene-to-animation mapping)
+  - Add `<img>` tags to instruction templates with proper alt text and responsive sizing
+  - **Priority**: Low — instructions are functional without visuals but would benefit from visual guides
 
-- [ ] **OBS Studio Instructions Page Review**
-  - Must be done after `obs-websocket-py` library integration
-  - Review and update OBS Studio instruction page once WebSocket integration is implemented
-  - Update screenshots and examples to reflect new WebSocket connection method
-  - Remove outdated browser source references if any remain
-  - Ensure instructions align with new OBS WebSocket client functionality
-  - Add troubleshooting section specific to OBS WebSocket connection issues
+## Priority: Medium (Release Preparation)
 
-- [ ] **Update StreamerBot "Common Stream Events" animation suggestions**
-  - Must be done after starter animation templates are complete
-  - Review and update the "Suggested Animation" recommendations in the StreamerBot integration page
-  - Replace generic anim1-4.html suggestions with more specific, purpose-built animations
-  - Align suggestions with expanded starter animation library after more animations are built
-  - Consider event-specific animations (follow celebrations, donation displays, raid entrances, etc.)
+- [ ] **Prepare Release on GitHub and DockerHub**
+  - Set up GitHub Release with proper version tag, changelog, and release notes
+  - Configure DockerHub repository for automated or manual image publishing
+  - Create Docker image tagging strategy (`:latest`, `:v1.0.0`, etc.)
+  - Write release notes summarizing all features since initial development
+  - Verify Docker build works cleanly from a fresh pull
+  - Test Docker Compose one-liner deployment from scratch
+  - Consider creating a `CHANGELOG.md` if one doesn't exist
+  - **Priority**: Medium — all animation content is complete, system is feature-ready for first public release
 
-## Priority: Low (Animation Template Ideas)
+## Priority: Low (Engagement)
 
-- [ ] **Subscriber celebration with profile image integration**
-  - StreamerBot integration to capture new subscriber events
-  - Dynamic profile image display from Twitch/YouTube API
-  - Personalized confetti animation with subscriber's avatar
-  - WebSocket data flow: StreamerBot → Flask server → Animation
-  - Real-world example of event-driven, data-rich animations
+- [ ] **Draft Launch Posts for Beta Testers & Community Feedback**
+  - Write posts to share the project and attract beta testers, contributors, or reviewers
+  - **Target platforms**: Reddit (r/Twitch, r/streaming, r/obs, r/selfhosted, r/homelab), Facebook streaming groups, Discord streaming communities
+  - Tailor messaging per platform — Reddit prefers technical/open-source angles, Facebook groups want ease-of-use pitch
+  - **Post should cover**: What ATA does (Smart TV as stream display), key features (OBS automation, StreamerBot integration, mobile control), Docker one-liner setup, link to GitHub repo
+  - Include a short demo GIF or screenshot showing the TV in action if possible
+  - Mention it's open source and looking for feedback, feature ideas, and contributions
+  - **Priority**: Low — draft after the animation files are complete and a release-ready build is confirmed
 
-- [ ] **Additional template ideas for future development**
-  - "Welcome Raiders" screen for background scene visibility
-  - Goal progress tracker with dynamic updates
-  - "Starting Soon" countdown with streamer branding
-  - Technical difficulties holding screen
-  - New follower celebration burst animation
+## Priority: Low (Future Enhancements)
 
-## Priority: Optional (Potential Improvements)
+- [ ] **Personalized Animation Alerts (StreamerBot Payload Pass-Through)**
+  - Accept additional data in trigger payloads from StreamerBot (username, profile image URL, donation amount, sub tier, raid viewer count, message text, etc.)
+  - Pass payload data through SocketIO to the TV client alongside the animation trigger
+  - Animation HTML files read and display the dynamic data (e.g., follower's profile picture, "Thanks [username]!", "$5.00 from [user]")
+  - StreamerBot already exposes these variables in its actions — just need to include them in the HTTP/WebSocket payload
+  - **Scope**: Extends the existing trigger pipeline — no architectural changes needed, just a `payload` field on the trigger event
+  - **Impact**: Transforms generic animations into personalized streamer alerts that rival dedicated overlay tools
+  - Retrofit-friendly — existing animations simply ignore the payload field until updated to read it
+  - **Research needed**: Document which StreamerBot variables are available per event type (follow, donation, raid, sub, etc.)
+  - **Priority**: Low — ship with static text animations first, add personalization as a post-release enhancement
 
-- [ ] **Plugin/Extension System**
-  - **Potential Feature**: Allow users to drop in custom animation templates
-  - **Advanced**: Template marketplace or community sharing system
-  - **Technical**: Custom WebSocket event handlers, plugin API
-  - **Market Potential**: Could enable community-driven content ecosystem
+- [ ] **Multi-Channel TV Support (Up to 4 Channels)**
+  - Add channel-based routes so multiple TVs can display different animations simultaneously
+  - Each TV points to a different URL: `/ch1`, `/ch2`, `/ch3`, `/ch4` (cap at 4 for performance)
+  - Default `/` route continues to work as-is (backwards compatible, acts like ch1 or "all channels")
+  - **OBS mapping expansion**: Scene mappings go from `scene → animation` to `scene → {ch1: anim, ch2: anim, ...}`
+  - Each channel listens for its own SocketIO events (e.g., `trigger_ch1`, `trigger_ch2`) so animations fire independently
+  - Admin UI needs a channel selector in the OBS scene mapping interface and trigger controls
+  - Mobile control page could add channel tabs or a channel dropdown
+  - **Note**: Mobile control interface will need a revisit — could be as simple as a popup/modal when tapping an animation that asks which channel to play it on
+  - **Use cases**:
+    - Streamers with multi-TV setups (retro TV wall, dual monitor display, etc.)
+    - Venues/bars using digital signage across multiple screens
+    - Churches, events, or lobbies with different content per display
+  - **Implementation approach**: Likely a parameterized video player route (`/ch/<int:channel>`) reusing the existing template with a channel context variable
+  - StreamerBot/HTTP trigger API would accept an optional `channel` parameter (defaults to all channels for backwards compatibility)
+  - **Priority**: Low — post-release feature, but high impact for multi-display setups and opens up the digital signage market
 
-- [ ] **Advanced Integration Expansions**
-  - **Potential Integrations**: Streamlabs, Discord bot, Twitch chat commands, MIDI controllers
-  - **Target Market**: Advanced streamers wanting comprehensive automation
-  - **Weather Streamer Features**: Radar overlays, weather alert animations, forecast displays
-  - **Educational Features**: Slide presentations, diagram overlays, interactive content
+- [ ] **Auto-Update / One-Click Update from Dashboard**
+  - Extend the existing version check banner to support automatic updates
+  - When an update is detected, provide a "Update Now" button that pulls the latest version
+  - For Docker deployments: could trigger `docker pull` + container restart via a companion script or Watchtower integration
+  - For non-Docker: could `git pull` from the repo and restart the Flask server
+  - Show update progress and changelog/release notes from GitHub releases
+  - **Research needed**: Determine safest approach for self-updating a Docker container from within itself
+  - **Priority**: Low — version check banner already notifies users, manual update is fine for now
 
-- [ ] **Scene Preview & Management System**
-  - **Potential Feature**: Live preview of animations in admin interface
-  - **Advanced**: Animation playlists, scheduled triggers, scene queuing system
-  - **Professional Feature**: A/B testing different animations, performance metrics
-  - **UI Enhancement**: Drag-and-drop scene management, visual timeline editor
+- [ ] **Now Playing / Clock Animation (Angels-Now-Playing Integration)**
+  - Create `now_playing.html` animation that displays a live clock and a "Now Playing" widget
+  - Integrate with the separate **Angels-Now-Playing** project (custom OBS now-playing overlay)
+  - The Now Playing widget would show current song/media info on the TV display
+  - Clock component: fullscreen time + date display, ambient/screensaver style
+  - Now Playing component: embed or SocketIO integration with Angels-Now-Playing data
+  - Could use the same iframe-over-gradient pattern as donation/follower/goal pages, or a native SocketIO integration for tighter control
+  - **Priority**: Low — depends on Angels-Now-Playing project reaching a stable state first
 
 ## Completed Items
 
@@ -490,3 +502,41 @@ Make sure to update version numbers as MAJOR.MINOR.PATCH as needed when todo ite
   - Each module uses `logger = logging.getLogger(__name__)` for namespaced output
   - `thumbnail_service.py` already used logging — no changes needed
   - **Version Bump**: 0.9.4 → 0.9.5 (proper logging framework)
+
+- [x] **Add Configuration Management System** ✨ *COMPLETED* **v0.9.5** **February 25, 2026** - `github:AngelicAdvocate`
+  - Centralized `config.py` module created during modular refactor with all constants, paths, and ports
+  - Environment variables already in use: `PORT`, `FLASK_ENV`, `LOG_LEVEL`, `SECRET_KEY`
+  - Made Flask `SECRET_KEY` env-var configurable (defaults to built-in value for local use)
+
+- [x] **Create Reusable Header Template for Admin Pages** ✨ *COMPLETED* **v0.9.6** **February 25, 2026** - `github:AngelicAdvocate`
+  - Created `templates/partials/admin_header.html` — parameterized Jinja2 partial (67 lines)
+  - Extracted common header structure shared across 9 admin templates into single reusable file
+  - Each template now uses `{% set page_subtitle %}` + `{% set nav_buttons %}` + `{% include %}` (6 lines vs ~60 lines)
+  - Eliminated ~490 lines of duplicated header HTML across templates
+  - Partial handles: TV icon/title, social share buttons, support buttons, theme toggle, dynamic nav buttons, logout
+  - Nav buttons are fully configurable per page via list of `{icon, text, href, title}` dicts
+  - Theme toggle and Logout button are always included automatically
+  - Login page excluded (completely different header structure — no nav bar, always dark mode)
+  - **Version Bump**: 0.9.5 → 0.9.6 (DRY template refactor)
+
+- [x] **Complete All Animation HTML Files** ✨ *COMPLETED* **v0.9.7** **February 25, 2026** - `github:AngelicAdvocate`
+  - Completed all 6 originally-empty animation files with full ATA integration:
+    - `donation.html` — iframe-over-gradient for donation alert embeds (StreamElements, Streamlabs, Ko-fi, etc.)
+    - `follower.html` — iframe-over-gradient for follower alert embeds
+    - `raid.html` — custom animated floating text with sparkle particles and glow effects
+    - `goal_progress.html` — iframe-over-gradient for goal/progress bar embeds
+    - `weather_forecast.html` — 5-day forecast via free Open-Meteo API with geocoding
+    - `weather_radar.html` — fullscreen Windy.com radar iframe embed
+  - Replaced old test animations (anim1/2/3) with 3 new useful pages:
+    - `particles.html` — tsParticles ambient backgrounds (4 presets: Starfield, Fireflies, Snow, Matrix Rain)
+    - `chat_overlay.html` — iframe-over-gradient for live chat widget embeds
+    - `social_media.html` — infinite horizontal scrolling ticker of social media cards (14 pre-filled platforms)
+  - Created 3 additional new animation pages:
+    - `clock.html` — large centered clock with timezone, 12/24hr, bold, and 4 font choices
+    - `patreon.html` — movie credits-style vertical scroller for supporter names with tier sections
+    - `now_playing.html` — "Coming Soon" placeholder for Angels-Now-Playing integration
+  - Deleted old test animations (`anim1.html`, `anim2.html`, `anim3.html`)
+  - Updated all references in `docker-entrypoint.sh`, `websocket_handlers.py`, `obs_mappings.json`, `example_trigger.py`
+  - Standardized 10-gradient background color picker across all applicable pages (PURPLE through OCEAN, selectable by name or number 1–10)
+  - All pages use consistent ATA integration pattern (CSS link, Socket.IO, ata-integration.js, ATAIntegration init)
+  - **Version Bump**: 0.9.6 → 0.9.7 (complete animation content for shipping)

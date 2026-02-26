@@ -9,7 +9,7 @@ import logging.handlers
 from pathlib import Path
 
 # Version
-__version__ = "0.9.5"
+__version__ = "0.9.7"
 
 # Port configuration
 MAIN_PORT = int(os.environ.get('PORT', 8080))

@@ -1,10 +1,10 @@
 [
   {
-    "animation": "anim1.html",
+    "animation": "particles.html",
     "sceneName": "Game"
   },
   {
-    "animation": "anim2.html",
+    "animation": "chat_overlay.html",
     "sceneName": "VS-Code Layout"
   },
   {

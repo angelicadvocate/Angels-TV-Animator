@@ -364,11 +364,7 @@ function openTVView() {
     window.open('/', '_blank');
 }
 
-function showRestartDialog() {
-    if (confirm('Are you sure you want to restart the server? This will disconnect all devices temporarily.')) {
-        alert('Server restart functionality would be implemented here');
-    }
-}
+
 
 // Theme functions moved to global.js
 
@@ -469,7 +465,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (!easterEggFound) {
                         localStorage.setItem('mascotEasterEggFound', 'true');
                         easterEggFound = true;
-                        mascot.title = 'Thanks for finding the easter egg! 🎉';
+                        mascot.title = 'Click Me! 🎉';
                         mascot.style.filter = 'drop-shadow(0 4px 8px var(--shadow-primary))'; // Remove brightness hint
                     }
                 } else {
@@ -508,3 +504,77 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('❌ Mascot easter egg elements not found');
     }
 });
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// Version Check — compares local version to GitHub VERSION file
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const GITHUB_VERSION_URL = 'https://raw.githubusercontent.com/angelicadvocate/Angels-TV-Animator/main/VERSION';
+
+function getLocalVersion() {
+    const footerText = document.querySelector('.admin-footer span');
+    if (!footerText) return null;
+    const match = footerText.textContent.match(/v([\d.]+)/);
+    return match ? match[1].trim() : null;
+}
+
+function isNewerVersion(remote, local) {
+    const r = remote.split('.').map(Number);
+    const l = local.split('.').map(Number);
+    for (let i = 0; i < Math.max(r.length, l.length); i++) {
+        const rPart = r[i] || 0;
+        const lPart = l[i] || 0;
+        if (rPart > lPart) return true;
+        if (rPart < lPart) return false;
+    }
+    return false;
+}
+
+async function checkForUpdates() {
+    const banner = document.getElementById('versionBanner');
+    const icon = document.getElementById('versionIcon');
+    const message = document.getElementById('versionMessage');
+    const btn = document.getElementById('versionCheckBtn');
+    const btnIcon = document.getElementById('versionCheckIcon');
+
+    // Show spinner
+    btn.disabled = true;
+    btnIcon.classList.add('spinning');
+
+    const localVersion = getLocalVersion();
+    if (!localVersion) {
+        message.textContent = 'Could not determine local version.';
+        btn.disabled = false;
+        btnIcon.classList.remove('spinning');
+        return;
+    }
+
+    try {
+        const response = await fetch(GITHUB_VERSION_URL + '?t=' + Date.now(), { cache: 'no-store' });
+        if (!response.ok) throw new Error('GitHub fetch failed');
+        const remoteVersion = (await response.text()).trim();
+
+        if (isNewerVersion(remoteVersion, localVersion)) {
+            // Update available — remote is higher than local
+            banner.classList.add('update-available');
+            icon.className = 'fa-solid fa-triangle-exclamation';
+            message.innerHTML = `<strong>Update available!</strong> A new version <strong>v${remoteVersion}</strong> is available. You are running <strong>v${localVersion}</strong>.`;
+        } else {
+            // Up to date (or running ahead of release)
+            banner.classList.remove('update-available');
+            icon.className = 'fa-solid fa-circle-check';
+            message.textContent = `You are running the latest version (v${localVersion}).`;
+        }
+    } catch (err) {
+        banner.classList.remove('update-available');
+        icon.className = 'fa-solid fa-circle-info';
+        message.textContent = 'Unable to check for updates. GitHub may be unreachable.';
+        console.warn('Version check failed:', err);
+    }
+
+    btn.disabled = false;
+    btnIcon.classList.remove('spinning');
+}
+
+// Check for updates on page load (delayed so dashboard loads first)
+setTimeout(checkForUpdates, 2000);

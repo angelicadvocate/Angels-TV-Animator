@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--
+    ╔════════════════════════════════════════════════════════════════════════════╗
+    ║                   ANGELS-TV-ANIMATOR — PATREON / SUPPORTERS                ║
+    ╠════════════════════════════════════════════════════════════════════════════╣
+    ║                                                                            ║
+    ║  Displays a scrolling credits-style list of supporter names that           ║
+    ║  continuously rolls from bottom to top — like movie credits.               ║
+    ║  Perfect for Patreon supporters, donors, subscribers, or any               ║
+    ║  "thank you" list you want to show on your TV.                             ║
+    ║                                                                            ║
+    ║  HOW TO SET UP:                                                            ║
+    ║                                                                            ║
+    ║  STEP 1 — Set BACKGROUND_COLOR (name or number)                            ║
+    ║  STEP 2 — Set SCROLL_SPEED (1 = slow crawl, 10 = fast)                     ║
+    ║  STEP 3 — Set HEADER_TEXT (title shown at the top of the credits)          ║
+    ║  STEP 4 — Edit the SUPPORTERS array with your list of names                ║
+    ║                                                                            ║
+    ║  You can organize supporters into tiers/sections by adding a               ║
+    ║  special entry with "tier" set to true. Example:                           ║
+    ║                                                                            ║
+    ║    { tier: true, name: "★ Gold Tier ★" },                                 ║
+    ║    "GoldMember1",                                                          ║
+    ║    "GoldMember2",                                                          ║
+    ║    { tier: true, name: "Silver Tier" },                                    ║
+    ║    "SilverMember1",                                                        ║
+    ║                                                                            ║
+    ║  Or just use simple strings for a flat list:                               ║
+    ║                                                                            ║
+    ║    "Supporter1",                                                           ║
+    ║    "Supporter2",                                                           ║
+    ║    "Supporter3",                                                           ║
+    ║                                                                            ║
+    ╚════════════════════════════════════════════════════════════════════════════╝
+    -->
+
+    <title>Patreon / Supporters — Angels-TV-Animator</title>
+
+    <!-- REQUIRED — Angels-TV-Animator Integration CSS -->
+    <link rel="stylesheet" href="/static/css/ata-integration.css">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ffffff;
+        }
+
+        /* ===== Fullscreen Layout ===== */
+        .credits-viewport {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Top & bottom fade masks so names don't appear/disappear abruptly */
+        .credits-viewport::before,
+        .credits-viewport::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 15vh;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .credits-viewport::before {
+            top: 0;
+            background: linear-gradient(to bottom, var(--fade-color, rgba(0,0,0,1)) 0%, transparent 100%);
+        }
+
+        .credits-viewport::after {
+            bottom: 0;
+            background: linear-gradient(to top, var(--fade-color, rgba(0,0,0,1)) 0%, transparent 100%);
+        }
+
+        /* ===== Scrolling Track ===== */
+        .credits-track {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            will-change: transform;
+            padding: 0 40px;
+        }
+
+        .credits-track.animating {
+            animation: scroll-up linear infinite;
+        }
+
+        @keyframes scroll-up {
+            0%   { transform: translateY(0); }
+            100% { transform: translateY(-50%); }
+        }
+
+        /* ===== Header Title ===== */
+        .credits-header {
+            font-size: 120px;
+            font-weight: 700;
+            text-align: center;
+            text-shadow: 0 6px 50px rgba(0, 0, 0, 0.5);
+            padding: 80px 0 50px 0;
+            letter-spacing: 6px;
+        }
+
+        /* ===== Tier / Section Divider ===== */
+        .credits-tier {
+            font-size: 80px;
+            font-weight: 600;
+            text-align: center;
+            opacity: 0.7;
+            padding: 60px 0 30px 0;
+            letter-spacing: 4px;
+        }
+
+        /* ===== Supporter Name ===== */
+        .credits-name {
+            font-size: 88px;
+            font-weight: 300;
+            text-align: center;
+            padding: 20px 0;
+            opacity: 0.9;
+            letter-spacing: 3px;
+        }
+
+        /* ===== Spacer between duplicated sets ===== */
+        .credits-spacer {
+            height: 100vh;
+        }
+
+        /* ===== Setup message ===== */
+        .setup-message {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 60px;
+            box-sizing: border-box;
+        }
+
+        .setup-message h1 {
+            font-size: 64px;
+            font-weight: 700;
+            margin: 0 0 24px 0;
+            text-shadow: 0 2px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .setup-message p {
+            font-size: 32px;
+            line-height: 1.6;
+            opacity: 0.8;
+            margin: 0 0 14px 0;
+            max-width: 800px;
+        }
+
+        .setup-message code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="credits-viewport" id="mainElement">
+        <!-- Content rendered by JavaScript -->
+    </div>
+
+    <!-- REQUIRED — Integration Scripts (DO NOT REMOVE) -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="/static/js/ata-integration.js"></script>
+
+    <script>
+        // =====================================================================
+        //  ★  STEP 1: SET YOUR BACKGROUND COLOR  ★
+        //
+        //      "PURPLE"  or "1"       "PINK"    or "6"
+        //      "BLUE"    or "2"       "TEAL"    or "7"
+        //      "GREEN"   or "3"       "DARK"    or "8"
+        //      "RED"     or "4"       "SUNSET"  or "9"
+        //      "ORANGE"  or "5"       "OCEAN"   or "10"
+        //
+        // =====================================================================
+        const BACKGROUND_COLOR = "PURPLE";
+
+        // =====================================================================
+        //  ★  STEP 2: SET SCROLL SPEED  ★
+        //
+        //      1  = very slow crawl
+        //      3  = relaxed (default — good for long lists)
+        //      5  = moderate
+        //      10 = very fast
+        //
+        // =====================================================================
+        const SCROLL_SPEED = 3;
+
+        // =====================================================================
+        //  ★  STEP 3: SET HEADER TEXT  ★
+        //
+        //  The title shown at the top of the credits roll.
+        //  Set to "" to hide it entirely.
+        //
+        //  Examples:
+        //      "Thank You Supporters!"
+        //      "Our Patreon Family"
+        //      "Special Thanks"
+        //
+        // =====================================================================
+        const HEADER_TEXT = "Thank You Supporters!";
+
+        // =====================================================================
+        //  ★  STEP 4: LIST YOUR SUPPORTERS  ★
+        //
+        //  Add names as simple strings. For tier/section headers, use an
+        //  object with { tier: true, name: "Tier Name" }.
+        //
+        //  Examples:
+        //      "SupporterName",
+        //      { tier: true, name: "★ Gold Tier ★" },
+        //      "GoldSupporter1",
+        //
+        // =====================================================================
+        const SUPPORTERS = [
+            { tier: true, name: "★ Gold Tier ★" },
+            "Supporter1",
+            "Supporter2",
+            "Supporter3",
+
+            { tier: true, name: "Silver Tier" },
+            "Supporter4",
+            "Supporter5",
+            "Supporter6",
+
+            { tier: true, name: "Bronze Tier" },
+            "Supporter7",
+            "Supporter8",
+            "Supporter9",
+            "Supporter10",
+
+            // Add more names here!
+        ];
+
+
+        // ===== Color Gradient Map =====
+        const GRADIENTS = {
+            "PURPLE": "linear-gradient(160deg, #0f0c29 0%, #302b63 50%, #24243e 100%)",
+            "1":      "linear-gradient(160deg, #0f0c29 0%, #302b63 50%, #24243e 100%)",
+            "BLUE":   "linear-gradient(160deg, #0a1628 0%, #1a3a6b 50%, #0d2137 100%)",
+            "2":      "linear-gradient(160deg, #0a1628 0%, #1a3a6b 50%, #0d2137 100%)",
+            "GREEN":  "linear-gradient(160deg, #0a2910 0%, #1b5e20 50%, #0d3318 100%)",
+            "3":      "linear-gradient(160deg, #0a2910 0%, #1b5e20 50%, #0d3318 100%)",
+            "RED":    "linear-gradient(160deg, #2a0a0a 0%, #8b1a1a 50%, #3d0e0e 100%)",
+            "4":      "linear-gradient(160deg, #2a0a0a 0%, #8b1a1a 50%, #3d0e0e 100%)",
+            "ORANGE": "linear-gradient(160deg, #2a1a05 0%, #c75b00 50%, #3d2008 100%)",
+            "5":      "linear-gradient(160deg, #2a1a05 0%, #c75b00 50%, #3d2008 100%)",
+            "PINK":   "linear-gradient(160deg, #2a0a20 0%, #b0348a 50%, #3d0e2e 100%)",
+            "6":      "linear-gradient(160deg, #2a0a20 0%, #b0348a 50%, #3d0e2e 100%)",
+            "TEAL":   "linear-gradient(160deg, #042f2e 0%, #0d9488 50%, #064e3b 100%)",
+            "7":      "linear-gradient(160deg, #042f2e 0%, #0d9488 50%, #064e3b 100%)",
+            "DARK":   "linear-gradient(160deg, #0a0a0a 0%, #1c1c1c 50%, #111111 100%)",
+            "8":      "linear-gradient(160deg, #0a0a0a 0%, #1c1c1c 50%, #111111 100%)",
+            "SUNSET": "linear-gradient(160deg, #3d1208 0%, #e65100 30%, #d81b60 70%, #2a0a20 100%)",
+            "9":      "linear-gradient(160deg, #3d1208 0%, #e65100 30%, #d81b60 70%, #2a0a20 100%)",
+            "OCEAN":  "linear-gradient(160deg, #0a2342 0%, #1565c0 30%, #00838f 70%, #0a2a2a 100%)",
+            "10":     "linear-gradient(160deg, #0a2342 0%, #1565c0 30%, #00838f 70%, #0a2a2a 100%)",
+        };
+
+        // Map gradient key to a solid color for the fade mask edges
+        const FADE_COLORS = {
+            "PURPLE": "#0f0c29", "1": "#0f0c29",
+            "BLUE":   "#0a1628", "2": "#0a1628",
+            "GREEN":  "#0a2910", "3": "#0a2910",
+            "RED":    "#2a0a0a", "4": "#2a0a0a",
+            "ORANGE": "#2a1a05", "5": "#2a1a05",
+            "PINK":   "#2a0a20", "6": "#2a0a20",
+            "TEAL":   "#042f2e", "7": "#042f2e",
+            "DARK":   "#0a0a0a", "8": "#0a0a0a",
+            "SUNSET": "#3d1208", "9": "#3d1208",
+            "OCEAN":  "#0a2342", "10": "#0a2342",
+        };
+
+
+        // ===== Build credits HTML for one set =====
+        function buildCreditsSet() {
+            let html = '';
+
+            // Header
+            if (HEADER_TEXT && HEADER_TEXT.trim() !== '') {
+                html += `<div class="credits-header">${HEADER_TEXT}</div>`;
+            }
+
+            // Supporter entries
+            for (const entry of SUPPORTERS) {
+                if (typeof entry === 'string') {
+                    html += `<div class="credits-name">${entry}</div>`;
+                } else if (entry && entry.tier) {
+                    html += `<div class="credits-tier">${entry.name}</div>`;
+                }
+            }
+
+            return html;
+        }
+
+
+        // ===== Initialize =====
+        document.addEventListener('DOMContentLoaded', () => {
+            const viewport = document.getElementById('mainElement');
+
+            // Set background
+            const key = BACKGROUND_COLOR.toUpperCase().trim();
+            document.body.style.background = GRADIENTS[key] || GRADIENTS["PURPLE"];
+
+            // Set fade mask edge color to match gradient
+            const fadeColor = FADE_COLORS[key] || FADE_COLORS["PURPLE"];
+            viewport.style.setProperty('--fade-color', fadeColor);
+
+            // Check if there are any supporters
+            const hasNames = SUPPORTERS.some(s =>
+                typeof s === 'string' || (s && !s.tier)
+            );
+
+            if (!hasNames) {
+                viewport.innerHTML = `
+                    <div class="setup-message">
+                        <h1>🎖️ Supporter Credits</h1>
+                        <p>To display supporter names, open this file and add
+                           names to the <code>SUPPORTERS</code> array.</p>
+                        <p>Names scroll from bottom to top like movie credits.</p>
+                    </div>
+                `;
+                window.ataIntegration = new ATAIntegration('mainElement');
+                return;
+            }
+
+            // Build one set of credits
+            const oneSet = buildCreditsSet();
+
+            // Create the scrolling track with two copies + spacers for seamless loop
+            const track = document.createElement('div');
+            track.className = 'credits-track';
+            track.id = 'creditsTrack';
+            track.innerHTML =
+                oneSet +
+                '<div class="credits-spacer"></div>' +
+                oneSet +
+                '<div class="credits-spacer"></div>';
+
+            viewport.appendChild(track);
+
+            // Calculate animation duration using pixels-per-second so scroll
+            // speed feels consistent no matter how long the supporter list is.
+            // Speed 1 = 30 px/s (gentle crawl), Speed 10 = 600 px/s (blazing)
+            const pxPerSecond = 30 * Math.pow(SCROLL_SPEED, 1.5);
+            const halfHeight = track.scrollHeight / 2;
+            const duration = halfHeight / pxPerSecond;
+
+            track.style.animationDuration = duration + 's';
+            track.classList.add('animating');
+
+            // ATA integration
+            window.ataIntegration = new ATAIntegration('mainElement');
+        });
+    </script>
+
+</body>
+</html>

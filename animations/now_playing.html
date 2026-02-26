@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--
+    ╔════════════════════════════════════════════════════════════════════════════╗
+    ║                   ANGELS-TV-ANIMATOR — NOW PLAYING                         ║
+    ╠════════════════════════════════════════════════════════════════════════════╣
+    ║                                                                            ║
+    ║  This page will display "Now Playing" information from the separate        ║
+    ║  Angels-Now-Playing project. Integration is coming in a future release.    ║
+    ║                                                                            ║
+    ║  For updates, visit: https://github.com/angelicadvocate                    ║
+    ║                                                                            ║
+    ╚════════════════════════════════════════════════════════════════════════════╝
+    -->
+
+    <title>Now Playing — Angels-TV-Animator</title>
+
+    <!-- REQUIRED — Angels-TV-Animator Integration CSS -->
+    <link rel="stylesheet" href="/static/css/ata-integration.css">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ffffff;
+            background: linear-gradient(160deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+        }
+
+        .coming-soon {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            gap: 20px;
+        }
+
+        .coming-soon .icon {
+            font-size: 96px;
+            margin-bottom: 10px;
+        }
+
+        .coming-soon h1 {
+            font-size: 72px;
+            font-weight: 800;
+            margin: 0;
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .coming-soon p {
+            font-size: 32px;
+            font-weight: 300;
+            opacity: 0.6;
+            margin: 0;
+            max-width: 700px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="coming-soon" id="mainElement">
+        <div class="icon">🎵</div>
+        <h1>Now Playing</h1>
+        <p>Coming soon — this page will display currently playing music via the Angels-Now-Playing integration.</p>
+    </div>
+
+    <!-- REQUIRED — Integration Scripts (DO NOT REMOVE) -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="/static/js/ata-integration.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            window.ataIntegration = new ATAIntegration('mainElement');
+        });
+    </script>
+
+</body>
+</html>

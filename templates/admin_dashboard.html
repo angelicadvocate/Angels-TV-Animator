@@ -17,66 +17,12 @@
     <link rel="stylesheet" href="../static/css/admin_dashboard.css">
 </head>
 <body{% if user_theme=='dark' %} class="dark-mode" {% endif %}>
-    <div class="header-container">
-        <!-- Left Side: TV Icon and Title -->
-        <div class="header-left">
-            <i class="fas fa-tv header-icon"></i>
-            <div class="header-title">
-                <h1>Angels-TV-Animator</h1>
-                <p>Admin Dashboard</p>
-            </div>
-        </div>
-
-
-        <!-- Right Side: Three Rows of Buttons -->
-        <div class="header-right">
-
-            <!-- Row 1: Share Buttons -->
-            <div class="button-row">
-                <button class="btn-primary" id="shareTwitter" title="Share on Twitter">
-                    <i class="fa-brands fa-twitter"></i>
-                </button>
-                <button class="btn-primary" id="shareFacebook" title="Share on Facebook">
-                    <i class="fa-brands fa-facebook"></i>
-                </button>
-                <button class="btn-primary" id="shareReddit" title="Share on Reddit">
-                    <i class="fa-brands fa-reddit"></i>
-                </button>
-                <button class="btn-primary" id="shareDiscord" title="Share on Discord">
-                    <i class="fa-brands fa-discord"></i>
-                </button>
-                <div class="user-welcome">
-                    <i class="fa-solid fa-user"></i> Welcome: {{ current_username }}
-                </div>
-            </div>
-
-            <!-- Row 2: Support Buttons -->
-            <div class="button-row">
-                <button class="btn-primary" id="tipButton">
-                    <i class="fa-solid fa-heart"></i> Tip on Stream Elements
-                </button>
-                <button class="btn-primary" id="githubButton">
-                    <i class="fa-brands fa-github"></i> Star on GitHub
-                </button>
-            </div>
-
-            <!-- Row 3: Admin Controls -->
-            <div class="button-row">
-                <button class="theme-toggle" id="themeToggle" title="Toggle Dark Mode">
-                    <i class="fa-solid fa-moon" id="themeIcon"></i>
-                </button>
-                <a href="/admin/manage" class="btn-primary" style="text-decoration: none;" title="Manage Files">
-                    <i class="fa-solid fa-folder"></i> Files
-                </a>
-                <a href="/admin/users" class="btn-primary" style="text-decoration: none;" title="Manage Users">
-                    <i class="fa-solid fa-users"></i> Users
-                </a>
-                <a href="/admin/logout" class="btn-primary logout-btn" style="text-decoration: none;" title="Logout">
-                    <i class="fa-solid fa-sign-out-alt"></i> Logout
-                </a>
-            </div>
-        </div>
-    </div>
+    {% set page_subtitle = "Admin Dashboard" %}
+    {% set nav_buttons = [
+        {"icon": "fa-folder", "text": "Files", "href": "/admin/manage", "title": "Manage Files"},
+        {"icon": "fa-users", "text": "Users", "href": "/admin/users", "title": "Manage Users"}
+    ] %}
+    {% include 'partials/admin_header.html' %}
 
     <div class="admin-container">
         {% if show_credentials_warning %}
@@ -205,8 +151,22 @@
                         View</button>
                     <a href="/mobile" class="button secondary" target="_blank"><i class="fa-solid fa-mobile-alt"></i> Mobile Control</a>
                     <a href="/admin/obs" class="button secondary"><i class="fa-solid fa-video"></i> Manage OBS Settings</a>
-                    <button class="button danger" onclick="showRestartDialog()"><i class="fa-solid fa-power-off"></i>
-                        Restart Server</button>
+                    <a href="/health" class="button secondary" target="_blank"><i class="fa-solid fa-heartbeat"></i> Health Check</a>
+                </div>
+            </div>
+
+            <!-- Version Check Banner -->
+            <div class="version-banner" id="versionBanner">
+                <div class="version-content">
+                    <div class="version-icon">
+                        <i class="fa-solid fa-circle-check" id="versionIcon"></i>
+                    </div>
+                    <div class="version-text">
+                        <span id="versionMessage">Checking for updates...</span>
+                    </div>
+                    <button class="version-check-btn" id="versionCheckBtn" onclick="checkForUpdates()" title="Check for Updates">
+                        <i class="fa-solid fa-rotate" id="versionCheckIcon"></i> Check for Updates
+                    </button>
                 </div>
             </div>
         </div>
@@ -223,16 +183,19 @@
         <!-- Popover Easter Egg -->
         <div id="mascot-message" popover="auto" class="mascot-popover">
             <div class="popover-header">
-                <span class="popover-title">🎉 Thanks for using Angels-TV-Animator!</span>
+                <span class="popover-title">🎉 Angels-TV-Animator! 🎉</span>
                 <button class="popover-close" popovertarget="mascot-message" popovertargetaction="hide">×</button>
             </div>
             <div class="popover-content">
-                <p>Hey there, explorer! 👋 Angelito here and you've discovered my hidden message!</p>
-                <p><strong>Thank you</strong> for giving this project a try - your curiosity and creativity are what
-                    keep it growing. Every person who takes a chance on it helps shape where it goes next, and that
-                    means a lot. 💛</p>
-                <p><em>I hope this tool helps you bring your ideas to life and inspires you to keep building, streaming,
-                        and creating amazing things!</em></p>
+                <p>Hey there, explorer! 👋 You've discovered my hidden message!</p>
+                <p><strong>Thank you</strong> for giving this project a try! Your curiosity and support are what
+                    keep it growing. Every person who takes a chance on it helps shape where it goes next, and we
+                    appreciate it so much. 💛</p>
+                <p><em>I hope this tool helps you bring your ideas to life and inspires you to keep building,
+                    streaming, and creating amazing things!</em></p>
+                <p>Have feedback or suggestions? We'd love to hear from you! Submit an issue or pull request on
+                    GitHub — linked in the top right of this page. If you'd like to support the project, consider
+                    giving it a ⭐ on GitHub or tipping using the link in the header. Thank you!</p>
             </div>
 
         </div>

@@ -1,0 +1,67 @@
+{# ═══════════════════════════════════════════════════════════════════════════
+   Admin Header Partial — templates/partials/admin_header.html
+   ═══════════════════════════════════════════════════════════════════════════
+   Required variables (set before {% include %}):
+     page_subtitle  — string, e.g. "Admin Dashboard"
+     nav_buttons    — list of dicts: {icon, text, href, title}
+
+   Theme toggle and Logout are always included automatically.
+   ═══════════════════════════════════════════════════════════════════════════ #}
+    <div class="header-container">
+        <!-- Left Side: TV Icon and Title -->
+        <div class="header-left">
+            <i class="fas fa-tv header-icon"></i>
+            <div class="header-title">
+                <h1>Angels-TV-Animator</h1>
+                <p>{{ page_subtitle }}</p>
+            </div>
+        </div>
+
+        <!-- Right Side: Three Rows of Buttons -->
+        <div class="header-right">
+
+            <!-- Row 1: Share Buttons -->
+            <div class="button-row">
+                <button class="btn-primary" id="shareTwitter" title="Share on Twitter">
+                    <i class="fa-brands fa-twitter"></i>
+                </button>
+                <button class="btn-primary" id="shareFacebook" title="Share on Facebook">
+                    <i class="fa-brands fa-facebook"></i>
+                </button>
+                <button class="btn-primary" id="shareReddit" title="Share on Reddit">
+                    <i class="fa-brands fa-reddit"></i>
+                </button>
+                <button class="btn-primary" id="shareDiscord" title="Share on Discord">
+                    <i class="fa-brands fa-discord"></i>
+                </button>
+                <div class="user-welcome">
+                    <i class="fa-solid fa-user"></i> Welcome: {{ current_username }}
+                </div>
+            </div>
+
+            <!-- Row 2: Support Buttons -->
+            <div class="button-row">
+                <button class="btn-primary" id="tipButton">
+                    <i class="fa-solid fa-heart"></i> Tip on Stream Elements
+                </button>
+                <button class="btn-primary" id="githubButton">
+                    <i class="fa-brands fa-github"></i> Star on GitHub
+                </button>
+            </div>
+
+            <!-- Row 3: Admin Controls -->
+            <div class="button-row">
+                <button class="theme-toggle" id="themeToggle" title="Toggle Dark Mode">
+                    <i class="fa-solid fa-moon" id="themeIcon"></i>
+                </button>
+                {% for btn in nav_buttons %}
+                <a href="{{ btn.href }}" class="btn-primary" style="text-decoration: none;" title="{{ btn.title }}">
+                    <i class="fa-solid {{ btn.icon }}"></i> {{ btn.text }}
+                </a>
+                {% endfor %}
+                <a href="/admin/logout" class="btn-primary logout-btn" style="text-decoration: none;" title="Logout">
+                    <i class="fa-solid fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </div>
+    </div>

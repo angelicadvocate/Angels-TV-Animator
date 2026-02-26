@@ -417,6 +417,73 @@
     }
 }
 
+/* Version Check Banner */
+.version-banner {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, var(--primary-blue), #1565c0);
+    border: 2px solid var(--primary-blue);
+    border-radius: var(--radius-lg);
+    margin: 0;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.version-banner.update-available {
+    background: linear-gradient(135deg, #ff9800, #f57c00);
+    border-color: #ff6f00;
+    box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+}
+
+.version-content {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) var(--spacing-lg);
+}
+
+.version-icon {
+    color: white;
+    font-size: 1.3rem;
+}
+
+.version-text {
+    flex: 1;
+    color: white;
+    font-size: var(--font-size-base);
+    font-weight: 500;
+}
+
+.version-check-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: white;
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: var(--font-size-small);
+    font-weight: 500;
+    white-space: nowrap;
+    transition: background var(--transition-medium);
+}
+
+.version-check-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.version-check-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.version-check-btn .spinning {
+    animation: spin 1s linear infinite;
+}
+
 /* Refresh Button */
 .refresh-btn {
     position: fixed;

@@ -12,69 +12,13 @@
     <link rel="stylesheet" href="../../static/css/admin_instructions.css">
 </head>
 <body{% if user_theme == 'dark' %} class="dark-mode"{% endif %}>
-    <div class="header-container">
-        <!-- Left Side: TV Icon and Title -->
-        <div class="header-left">
-            <i class="fas fa-tv header-icon"></i>
-            <div class="header-title">
-                <h1>Angels-TV-Animator</h1>
-                <p>StreamerBot Integration</p>
-            </div>
-        </div>
-
-        
-        <!-- Right Side: Three Rows of Buttons -->
-        <div class="header-right">
-
-            <!-- Row 1: Share Buttons -->
-            <div class="button-row">
-                <button class="btn-primary" id="shareTwitter" title="Share on Twitter">
-                    <i class="fa-brands fa-twitter"></i>
-                </button>
-                <button class="btn-primary" id="shareFacebook" title="Share on Facebook">
-                    <i class="fa-brands fa-facebook"></i>
-                </button>
-                <button class="btn-primary" id="shareReddit" title="Share on Reddit">
-                    <i class="fa-brands fa-reddit"></i>
-                </button>
-                <button class="btn-primary" id="shareDiscord" title="Share on Discord">
-                    <i class="fa-brands fa-discord"></i>
-                </button>
-                <div class="user-welcome">
-                    <i class="fa-solid fa-user"></i> Welcome: {{ current_username }}
-                </div>
-            </div>
-                        
-            <!-- Row 2: Support Buttons -->
-            <div class="button-row">
-                <button class="btn-primary" id="tipButton">
-                    <i class="fa-solid fa-heart"></i> Tip on Stream Elements
-                </button>
-                <button class="btn-primary" id="githubButton">
-                    <i class="fa-brands fa-github"></i> Star on GitHub
-                </button>
-            </div>
-            
-            <!-- Row 3: Admin Controls -->
-            <div class="button-row">
-                <button class="theme-toggle" id="themeToggle" title="Toggle Dark Mode">
-                    <i class="fa-solid fa-moon" id="themeIcon"></i>
-                </button>
-                <a href="/admin" class="btn-primary" style="text-decoration: none;" title="Dashboard">
-                    <i class="fa-solid fa-home"></i> Dashboard
-                </a>
-                <a href="/admin/instructions" class="btn-primary" style="text-decoration: none;" title="Instructions">
-                    <i class="fa-solid fa-book"></i> Instructions
-                </a>
-                <a href="/admin/users" class="btn-primary" style="text-decoration: none;" title="Manage Users">
-                    <i class="fa-solid fa-users"></i> Users
-                </a>
-                <a href="/admin/logout" class="btn-primary logout-btn" style="text-decoration: none;" title="Logout">
-                    <i class="fa-solid fa-sign-out-alt"></i> Logout
-                </a>
-            </div>
-        </div>
-    </div>
+    {% set page_subtitle = "StreamerBot Integration" %}
+    {% set nav_buttons = [
+        {"icon": "fa-home", "text": "Dashboard", "href": "/admin", "title": "Dashboard"},
+        {"icon": "fa-book", "text": "Instructions", "href": "/admin/instructions", "title": "Instructions"},
+        {"icon": "fa-users", "text": "Users", "href": "/admin/users", "title": "Manage Users"}
+    ] %}
+    {% include 'partials/admin_header.html' %}
     
     <div class="admin-container">
         <div class="instructions-content">

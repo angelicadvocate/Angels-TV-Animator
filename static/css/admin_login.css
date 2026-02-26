@@ -55,6 +55,20 @@
     border-radius: var(--radius-xl) var(--radius-xl) 0 0;
 }
 
+.login-icon {
+    text-align: center;
+    margin-bottom: var(--spacing-sm);
+}
+
+.login-icon i {
+    font-size: 3rem;
+    background: linear-gradient(135deg, #ffffff, var(--highlight));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.3));
+}
+
 .login-header h1 {
     margin: 0 0 var(--spacing-xs) 0;
     font-size: 1.9rem;

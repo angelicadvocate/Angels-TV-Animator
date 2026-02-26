@@ -35,6 +35,8 @@ services:
       - FLASK_ENV=production
       - PORT=8080        # Main port (Raw WebSocket will be PORT+1=8081)
       - PYTHONUNBUFFERED=1
+      # - LOG_LEVEL=INFO   # DEBUG, INFO, WARNING, ERROR, CRITICAL
+      # - SECRET_KEY=your-secret-key-here  # Optional: override default Flask secret key
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 30s

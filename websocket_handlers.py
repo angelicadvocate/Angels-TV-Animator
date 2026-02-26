@@ -151,12 +151,12 @@ def handle_scene_change(data):
             animation = animation_mapping[scene_name]
         else:
             default_mapping = {
-                'gaming': 'anim1.html',
-                'chatting': 'anim2.html',
-                'brb': 'anim3.html',
-                'be right back': 'anim3.html',
-                'starting soon': 'anim1.html',
-                'ending soon': 'anim2.html'
+                'gaming': 'particles.html',
+                'chatting': 'chat_overlay.html',
+                'brb': 'brb.html',
+                'be right back': 'brb.html',
+                'starting soon': 'social_media.html',
+                'ending soon': 'social_media.html'
             }
             animation = default_mapping.get(scene_name)
 

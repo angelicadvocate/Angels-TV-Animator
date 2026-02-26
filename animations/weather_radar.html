@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--
+    ╔════════════════════════════════════════════════════════════════════════════╗
+    ║                   ANGELS-TV-ANIMATOR — WEATHER RADAR                       ║
+    ╠════════════════════════════════════════════════════════════════════════════╣
+    ║                                                                            ║
+    ║  Displays a fullscreen live weather radar map powered by Windy.com.        ║
+    ║  Perfect for a "weather channel" look on your Smart TV or stream overlay.  ║
+    ║                                                                            ║
+    ║  HOW TO CUSTOMIZE THE MAP:                                                 ║
+    ║  1. Visit the Windy embed configurator:                                    ║
+    ║     https://embed.windy.com/config/map                                     ║
+    ║  2. Set your preferred location, zoom level, overlay (radar, wind,         ║
+    ║     temperature, etc.), and other options                                  ║
+    ║  3. Click "Get Embed Code" and copy the entire <iframe> tag                ║
+    ║  4. Replace the <iframe> in the HTML body below with your new one          ║
+    ║                                                                            ║
+    ║  The default map is centered on the central United States with wind        ║
+    ║  overlay at zoom level 5. Change it to your city or region!                ║
+    ║                                                                            ║
+    ║  COMMON WINDY EMBED PARAMETERS (in the src URL):                           ║
+    ║  • lat / lon — Center coordinates of the map                               ║
+    ║  • zoom — Zoom level (3=continent, 5=region, 8=city, 12=neighborhood)      ║
+    ║  • overlay — wind, rain, clouds, temp, radar, satellite, etc.              ║
+    ║  • metricTemp — °F or °C                                                   ║
+    ║  • metricWind — mph, km/h, kt, m/s                                         ║
+    ║  • metricRain — in or mm                                                   ║
+    ║  • message — true/false (show info banner)                                 ║
+    ║                                                                            ║
+    ╚════════════════════════════════════════════════════════════════════════════╝
+    -->
+
+    <title>Weather Radar — Angels-TV-Animator</title>
+
+    <!-- REQUIRED — Angels-TV-Animator Integration CSS -->
+    <link rel="stylesheet" href="/static/css/ata-integration.css">
+
+    <style>
+        /* Base page styles — no margins, no scrollbars, black background */
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #0a0a1a;
+        }
+
+        /* Fullscreen iframe container */
+        .radar-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* Make the Windy iframe fill the entire screen */
+        .radar-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <!--
+        ┌────────────────────────────────────────────────────────────────┐
+        │  WINDY EMBED — Replace this iframe to change your map          │
+        │                                                                │
+        │  To get a new embed:                                           │
+        │  1. Go to: https://embed.windy.com/config/map                  │
+        │  2. Configure your location and preferences                    │
+        │  3. Copy the <iframe> code                                     │
+        │  4. Paste it below, replacing the existing <iframe>            │
+        │                                                                │
+        │  TIP: The width and height attributes on the iframe don't      │
+        │  matter — the CSS above forces it to 100% fullscreen.          │
+        │  Just paste the embed code as-is and it will fill the TV.      │
+        │  Replace only the line that starts with <iframe>               │
+        └────────────────────────────────────────────────────────────────┘
+    -->
+    <div class="radar-container" id="mainElement">
+        <iframe width="1280" height="720" src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=in&metricTemp=°F&metricWind=mph&zoom=5&overlay=wind&product=ecmwf&level=surface&lat=38.065&lon=-96.68&message=true" frameborder="0"></iframe>
+    </div>
+
+    <!-- REQUIRED — Integration Scripts (DO NOT REMOVE) -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="/static/js/ata-integration.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            window.ataIntegration = new ATAIntegration('mainElement');
+        });
+    </script>
+
+</body>
+</html>

@@ -3,6 +3,7 @@ Angels-TV-Animator: Flask extension instances.
 Created here to avoid circular imports - all modules import from this file.
 """
 
+import os
 from datetime import timedelta
 from flask import Flask
 from flask_socketio import SocketIO
@@ -13,7 +14,7 @@ from config import __version__
 
 # Flask application
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'angels-tv-animator-secret-key'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'angels-tv-animator-secret-key')
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=1)
 app.config['MAX_CONTENT_LENGTH'] = config.MAX_UPLOAD_SIZE_MB * 1024 * 1024  # Upload size limit
 

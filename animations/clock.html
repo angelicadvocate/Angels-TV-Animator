@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--
+    ╔════════════════════════════════════════════════════════════════════════════╗
+    ║                   ANGELS-TV-ANIMATOR — CLOCK                               ║
+    ╠════════════════════════════════════════════════════════════════════════════╣
+    ║                                                                            ║
+    ║  A simple, large clock display for your TV. Centered on screen with        ║
+    ║  customizable timezone, 12/24-hour format, and gradient background.        ║
+    ║                                                                            ║
+    ║  HOW TO SET UP:                                                            ║
+    ║                                                                            ║
+    ║  STEP 1 — Set BACKGROUND_COLOR (name or number)                            ║
+    ║  STEP 2 — Set TIMEZONE (IANA timezone string)                              ║
+    ║  STEP 3 — Set USE_24_HOUR to true or false                                 ║
+    ║  STEP 4 — Set SHOW_AMPM to true or false (only applies in 12-hour mode)    ║
+    ║  STEP 5 — Set SHOW_SECONDS to true or false                                ║
+    ║  STEP 6 — Set SHOW_DATE to true or false                                   ║
+    ║  STEP 7 — Set BOLD_TEXT to true or false                                   ║
+    ║  STEP 8 — Set CLOCK_FONT (1-4) to choose a font style                     ║
+    ║                                                                            ║
+    ║  TIMEZONE EXAMPLES:                                                        ║
+    ║    "America/New_York"      — US Eastern                                    ║
+    ║    "America/Chicago"       — US Central                                    ║
+    ║    "America/Denver"        — US Mountain                                   ║
+    ║    "America/Los_Angeles"   — US Pacific                                    ║
+    ║    "America/Anchorage"     — US Alaska                                     ║
+    ║    "Pacific/Honolulu"      — US Hawaii                                     ║
+    ║    "Europe/London"         — UK                                            ║
+    ║    "Europe/Berlin"         — Central Europe                                ║
+    ║    "Asia/Tokyo"            — Japan                                         ║
+    ║    "Australia/Sydney"      — Australia Eastern                             ║
+    ║                                                                            ║
+    ║  Full list: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones   ║
+    ║                                                                            ║
+    ╚════════════════════════════════════════════════════════════════════════════╝
+    -->
+
+    <title>Clock — Angels-TV-Animator</title>
+
+    <!-- Google Fonts for clock font options -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Playfair+Display:wght@400;700&family=Roboto+Mono:wght@300;700&display=swap" rel="stylesheet">
+
+    <!-- REQUIRED — Angels-TV-Animator Integration CSS -->
+    <link rel="stylesheet" href="/static/css/ata-integration.css">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ffffff;
+        }
+
+        .clock-wrapper {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            gap: 10px;
+        }
+
+        .clock-time {
+            font-size: 300px;
+            font-weight: 200;
+            letter-spacing: 10px;
+            text-shadow: 0 8px 80px rgba(0, 0, 0, 0.4);
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .clock-ampm {
+            font-size: 100px;
+            font-weight: 300;
+            opacity: 0.5;
+            vertical-align: super;
+            margin-left: 16px;
+            letter-spacing: 6px;
+        }
+
+        .clock-date {
+            font-size: 72px;
+            font-weight: 300;
+            opacity: 0.4;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            margin-top: 24px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="clock-wrapper" id="mainElement">
+        <div class="clock-time" id="clockTime"></div>
+        <div class="clock-date" id="clockDate"></div>
+    </div>
+
+    <!-- REQUIRED — Integration Scripts (DO NOT REMOVE) -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="/static/js/ata-integration.js"></script>
+
+    <script>
+        // =====================================================================
+        //  ★  STEP 1: SET YOUR BACKGROUND COLOR  ★
+        //
+        //      "PURPLE"  or "1"       "PINK"    or "6"
+        //      "BLUE"    or "2"       "TEAL"    or "7"
+        //      "GREEN"   or "3"       "DARK"    or "8"
+        //      "RED"     or "4"       "SUNSET"  or "9"
+        //      "ORANGE"  or "5"       "OCEAN"   or "10"
+        //
+        // =====================================================================
+        const BACKGROUND_COLOR = "DARK";
+
+        // =====================================================================
+        //  ★  STEP 2: SET YOUR TIMEZONE  ★
+        //
+        //  Use an IANA timezone string. See the header comment for examples.
+        //  Leave empty ("") to use the browser/device's local timezone.
+        //
+        // =====================================================================
+        const TIMEZONE = "America/New_York";
+
+        // =====================================================================
+        //  ★  STEP 3: 12-HOUR OR 24-HOUR FORMAT  ★
+        //
+        //      false = 12-hour (e.g., 2:30)
+        //      true  = 24-hour (e.g., 14:30)
+        //
+        // =====================================================================
+        const USE_24_HOUR = false;
+
+        // =====================================================================
+        //  ★  STEP 4: SHOW AM / PM INDICATOR  ★
+        //
+        //  Only applies when USE_24_HOUR is false.
+        //
+        //      true  = show (e.g., 2:30 PM)
+        //      false = hide (e.g., 2:30)
+        //
+        // =====================================================================
+        const SHOW_AMPM = true;
+
+        // =====================================================================
+        //  ★  STEP 5: SHOW SECONDS  ★
+        //
+        //      true  = show (e.g., 2:30:45)
+        //      false = hide (e.g., 2:30)
+        //
+        // =====================================================================
+        const SHOW_SECONDS = false;
+
+        // =====================================================================
+        //  ★  STEP 6: SHOW DATE  ★
+        //
+        //  Displays the current date below the clock.
+        //
+        //      true  = show (e.g., Wednesday, February 25, 2026)
+        //      false = hide
+        //
+        // =====================================================================
+        const SHOW_DATE = true;
+
+        // =====================================================================
+        //  ★  STEP 7: BOLD TEXT  ★
+        //
+        //      true  = bold clock and date text
+        //      false = normal weight (thin/light)
+        //
+        // =====================================================================
+        const BOLD_TEXT = false;
+
+        // =====================================================================
+        //  ★  STEP 8: CHOOSE A FONT  ★
+        //
+        //      1 = Segoe UI        (clean, modern — default)
+        //      2 = Orbitron         (futuristic, digital feel)
+        //      3 = Playfair Display (elegant, serif)
+        //      4 = Roboto Mono      (monospace, technical)
+        //
+        // =====================================================================
+        const CLOCK_FONT = 1;
+
+
+        // ===== Color Gradient Map =====
+        const GRADIENTS = {
+            "PURPLE": "linear-gradient(160deg, #0f0c29 0%, #302b63 50%, #24243e 100%)",
+            "1":      "linear-gradient(160deg, #0f0c29 0%, #302b63 50%, #24243e 100%)",
+            "BLUE":   "linear-gradient(160deg, #0a1628 0%, #1a3a6b 50%, #0d2137 100%)",
+            "2":      "linear-gradient(160deg, #0a1628 0%, #1a3a6b 50%, #0d2137 100%)",
+            "GREEN":  "linear-gradient(160deg, #0a2910 0%, #1b5e20 50%, #0d3318 100%)",
+            "3":      "linear-gradient(160deg, #0a2910 0%, #1b5e20 50%, #0d3318 100%)",
+            "RED":    "linear-gradient(160deg, #2a0a0a 0%, #8b1a1a 50%, #3d0e0e 100%)",
+            "4":      "linear-gradient(160deg, #2a0a0a 0%, #8b1a1a 50%, #3d0e0e 100%)",
+            "ORANGE": "linear-gradient(160deg, #2a1a05 0%, #c75b00 50%, #3d2008 100%)",
+            "5":      "linear-gradient(160deg, #2a1a05 0%, #c75b00 50%, #3d2008 100%)",
+            "PINK":   "linear-gradient(160deg, #2a0a20 0%, #b0348a 50%, #3d0e2e 100%)",
+            "6":      "linear-gradient(160deg, #2a0a20 0%, #b0348a 50%, #3d0e2e 100%)",
+            "TEAL":   "linear-gradient(160deg, #042f2e 0%, #0d9488 50%, #064e3b 100%)",
+            "7":      "linear-gradient(160deg, #042f2e 0%, #0d9488 50%, #064e3b 100%)",
+            "DARK":   "linear-gradient(160deg, #0a0a0a 0%, #1c1c1c 50%, #111111 100%)",
+            "8":      "linear-gradient(160deg, #0a0a0a 0%, #1c1c1c 50%, #111111 100%)",
+            "SUNSET": "linear-gradient(160deg, #3d1208 0%, #e65100 30%, #d81b60 70%, #2a0a20 100%)",
+            "9":      "linear-gradient(160deg, #3d1208 0%, #e65100 30%, #d81b60 70%, #2a0a20 100%)",
+            "OCEAN":  "linear-gradient(160deg, #0a2342 0%, #1565c0 30%, #00838f 70%, #0a2a2a 100%)",
+            "10":     "linear-gradient(160deg, #0a2342 0%, #1565c0 30%, #00838f 70%, #0a2a2a 100%)",
+        };
+
+
+        // ===== Clock Logic =====
+        function updateClock() {
+            const timeEl = document.getElementById('clockTime');
+            const dateEl = document.getElementById('clockDate');
+
+            // Build Intl options for the time
+            const timeOpts = {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: !USE_24_HOUR,
+            };
+
+            if (SHOW_SECONDS) {
+                timeOpts.second = '2-digit';
+            }
+
+            if (TIMEZONE && TIMEZONE.trim() !== '') {
+                timeOpts.timeZone = TIMEZONE.trim();
+            }
+
+            const now = new Date();
+
+            // Format time
+            let timeStr = now.toLocaleTimeString('en-US', timeOpts);
+
+            // Handle AM/PM display
+            if (!USE_24_HOUR) {
+                const ampmMatch = timeStr.match(/(AM|PM)$/i);
+                if (ampmMatch) {
+                    const ampm = ampmMatch[1].toUpperCase();
+                    timeStr = timeStr.replace(/\s?(AM|PM)$/i, '');
+                    if (SHOW_AMPM) {
+                        timeStr += `<span class="clock-ampm">${ampm}</span>`;
+                    }
+                }
+            }
+
+            timeEl.innerHTML = timeStr;
+
+            // Format date
+            if (SHOW_DATE) {
+                const dateOpts = {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                };
+                if (TIMEZONE && TIMEZONE.trim() !== '') {
+                    dateOpts.timeZone = TIMEZONE.trim();
+                }
+                dateEl.textContent = now.toLocaleDateString('en-US', dateOpts);
+                dateEl.style.display = '';
+            } else {
+                dateEl.style.display = 'none';
+            }
+        }
+
+
+        // ===== Initialize =====
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set background
+            const key = BACKGROUND_COLOR.toUpperCase().trim();
+            document.body.style.background = GRADIENTS[key] || GRADIENTS["DARK"];
+
+            // Apply font choice
+            const FONTS = {
+                1: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+                2: "'Orbitron', sans-serif",
+                3: "'Playfair Display', serif",
+                4: "'Roboto Mono', monospace",
+            };
+            const fontFamily = FONTS[CLOCK_FONT] || FONTS[1];
+            document.querySelector('.clock-wrapper').style.fontFamily = fontFamily;
+
+            // Apply bold setting
+            if (BOLD_TEXT) {
+                document.getElementById('clockTime').style.fontWeight = '700';
+                document.getElementById('clockDate').style.fontWeight = '700';
+            }
+
+            // Start clock — update immediately, then every second
+            updateClock();
+            setInterval(updateClock, 1000);
+
+            // ATA integration
+            window.ataIntegration = new ATAIntegration('mainElement');
+        });
+    </script>
+
+</body>
+</html>
