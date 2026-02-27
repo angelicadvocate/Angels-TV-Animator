@@ -1,93 +1,25 @@
+# Changelog
 
-# Angels-TV-Animator TODO List
+> All completed items from `todo_list.md` are moved here once finished.
+> Follow [Semantic Versioning](https://semver.org/) (MAJOR.MINOR.PATCH).
 
-## Priority: Low (Code Organization & Cleanup)
+### Entry Format
 
-- [ ] **Add Images & GIF Animations to Instructions Pages**
-  - Create screenshots and GIF walkthroughs for Getting Started, StreamerBot, OBS, and Troubleshooting pages
-  - Store images in `static/assets/` directory (already exists)
-  - Topics to capture: admin dashboard overview, file management workflow, OBS connection setup, scene mapping configuration, StreamerBot action creation, mobile control interface
-  - Use GIFs to demonstrate multi-step workflows (e.g., drag-and-drop upload, animation switching, OBS scene-to-animation mapping)
-  - Add `<img>` tags to instruction templates with proper alt text and responsive sizing
-  - **Priority**: Low — instructions are functional without visuals but would benefit from visual guides
+```
+- [x] **Title** ✨ *COMPLETED* **vX.Y.Z** **Month DD, YYYY** - `github:Username`
+```
 
-## Priority: Medium (Release Preparation)
+| Part | Description |
+|------|-------------|
+| `- [ ]` | Pending checkbox |
+| `- [x]` | In-progress checkbox |
+| **Title** | Short description of what was done |
+| ✨ *COMPLETED* | Status marker |
+| **vX.Y.Z** | Version when completed (optionally omit if no version bump) |
+| **Date** | Date completed (omit if unknown) |
+| `github:Username` | Who completed it |
 
-- [ ] **Prepare Release on GitHub and DockerHub**
-  - Set up GitHub Release with proper version tag, changelog, and release notes
-  - Configure DockerHub repository for automated or manual image publishing
-  - Create Docker image tagging strategy (`:latest`, `:v1.0.0`, etc.)
-  - Write release notes summarizing all features since initial development
-  - Verify Docker build works cleanly from a fresh pull
-  - Test Docker Compose one-liner deployment from scratch
-  - Consider creating a `CHANGELOG.md` if one doesn't exist
-  - **Priority**: Medium — all animation content is complete, system is feature-ready for first public release
-
-## Priority: Low (Engagement)
-
-- [ ] **Draft Launch Posts for Beta Testers & Community Feedback**
-  - Write posts to share the project and attract beta testers, contributors, or reviewers
-  - **Target platforms**: Reddit (r/Twitch, r/streaming, r/obs, r/selfhosted, r/homelab), Facebook streaming groups, Discord streaming communities
-  - Tailor messaging per platform — Reddit prefers technical/open-source angles, Facebook groups want ease-of-use pitch
-  - **Post should cover**: What ATA does (Smart TV as stream display), key features (OBS automation, StreamerBot integration, mobile control), Docker one-liner setup, link to GitHub repo
-  - Include a short demo GIF or screenshot showing the TV in action if possible
-  - Mention it's open source and looking for feedback, feature ideas, and contributions
-  - **Priority**: Low — draft after the animation files are complete and a release-ready build is confirmed
-
-## Priority: Low (Future Enhancements)
-
-- [ ] **Personalized Animation Alerts (StreamerBot Payload Pass-Through)**
-  - Accept additional data in trigger payloads from StreamerBot (username, profile image URL, donation amount, sub tier, raid viewer count, message text, etc.)
-  - Pass payload data through SocketIO to the TV client alongside the animation trigger
-  - Animation HTML files read and display the dynamic data (e.g., follower's profile picture, "Thanks [username]!", "$5.00 from [user]")
-  - StreamerBot already exposes these variables in its actions — just need to include them in the HTTP/WebSocket payload
-  - **Scope**: Extends the existing trigger pipeline — no architectural changes needed, just a `payload` field on the trigger event
-  - **Impact**: Transforms generic animations into personalized streamer alerts that rival dedicated overlay tools
-  - Retrofit-friendly — existing animations simply ignore the payload field until updated to read it
-  - **Research needed**: Document which StreamerBot variables are available per event type (follow, donation, raid, sub, etc.)
-  - **Priority**: Low — ship with static text animations first, add personalization as a post-release enhancement
-
-- [ ] **Multi-Channel TV Support (Up to 4 Channels)**
-  - Add channel-based routes so multiple TVs can display different animations simultaneously
-  - Each TV points to a different URL: `/ch1`, `/ch2`, `/ch3`, `/ch4` (cap at 4 for performance)
-  - Default `/` route continues to work as-is (backwards compatible, acts like ch1 or "all channels")
-  - **OBS mapping expansion**: Scene mappings go from `scene → animation` to `scene → {ch1: anim, ch2: anim, ...}`
-  - Each channel listens for its own SocketIO events (e.g., `trigger_ch1`, `trigger_ch2`) so animations fire independently
-  - Admin UI needs a channel selector in the OBS scene mapping interface and trigger controls
-  - Mobile control page could add channel tabs or a channel dropdown
-  - **Note**: Mobile control interface will need a revisit — could be as simple as a popup/modal when tapping an animation that asks which channel to play it on
-  - **Use cases**:
-    - Streamers with multi-TV setups (retro TV wall, dual monitor display, etc.)
-    - Venues/bars using digital signage across multiple screens
-    - Churches, events, or lobbies with different content per display
-  - **Implementation approach**: Likely a parameterized video player route (`/ch/<int:channel>`) reusing the existing template with a channel context variable
-  - StreamerBot/HTTP trigger API would accept an optional `channel` parameter (defaults to all channels for backwards compatibility)
-  - **Priority**: Low — post-release feature, but high impact for multi-display setups and opens up the digital signage market
-
-- [ ] **Auto-Update / One-Click Update from Dashboard**
-  - Extend the existing version check banner to support automatic updates
-  - When an update is detected, provide a "Update Now" button that pulls the latest version
-  - For Docker deployments: could trigger `docker pull` + container restart via a companion script or Watchtower integration
-  - For non-Docker: could `git pull` from the repo and restart the Flask server
-  - Show update progress and changelog/release notes from GitHub releases
-  - **Research needed**: Determine safest approach for self-updating a Docker container from within itself
-  - **Priority**: Low — version check banner already notifies users, manual update is fine for now
-
-- [ ] **Now Playing / Clock Animation (Angels-Now-Playing Integration)**
-  - Create `now_playing.html` animation that displays a live clock and a "Now Playing" widget
-  - Integrate with the separate **Angels-Now-Playing** project (custom OBS now-playing overlay)
-  - The Now Playing widget would show current song/media info on the TV display
-  - Clock component: fullscreen time + date display, ambient/screensaver style
-  - Now Playing component: embed or SocketIO integration with Angels-Now-Playing data
-  - Could use the same iframe-over-gradient pattern as donation/follower/goal pages, or a native SocketIO integration for tighter control
-  - **Priority**: Low — depends on Angels-Now-Playing project reaching a stable state first
-
-## Completed Items
-
-##################################################################################################
-Please update dates and version numbers going forward!
-Make sure to update version numbers as MAJOR.MINOR.PATCH as needed when todo items are completed.
-##################################################################################################
+---
 
 **Initial Tracking Phase** (dates unknown and completion order may be incorrect until October 24, 2025 update)
 
@@ -540,3 +472,13 @@ Make sure to update version numbers as MAJOR.MINOR.PATCH as needed when todo ite
   - Standardized 10-gradient background color picker across all applicable pages (PURPLE through OCEAN, selectable by name or number 1–10)
   - All pages use consistent ATA integration pattern (CSS link, Socket.IO, ata-integration.js, ATAIntegration init)
   - **Version Bump**: 0.9.6 → 0.9.7 (complete animation content for shipping)
+
+- [x] **Release on GitHub and DockerHub** ✨ *COMPLETED* **v0.9.7** **February 26, 2026** - `github:AngelicAdvocate`
+  - Set up GitHub Release with proper version tag, changelog, and release notes
+  - Configure DockerHub repository for automated or manual image publishing
+  - Create Docker image tagging strategy (`:latest`, `:v1.0.0`, etc.)
+  - Write release notes summarizing all features since initial development
+  - Verify Docker build works cleanly from a fresh pull
+  - Test Docker Compose one-liner deployment from scratch
+  - Created a `CHANGELOG.md` to work in conjunction with `TODO.md`
+
