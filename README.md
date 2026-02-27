@@ -1,4 +1,4 @@
-# Angels-TV-Animator v0.9.0
+# Angels-TV-Animator v0.9.7
 
 > ⚠️ **This project is still in development and not production-ready.**
 > 
@@ -52,21 +52,39 @@ You only need **one** of the following installed on your system:
 
 ---
 
-### Build & Run
+### Quick Start (Docker Hub)
 
-> 🧱 **Docker Hub:** Prebuilt images are coming soon!  
-> For now, during testing, please build manually.
+> 🐳 **Prebuilt images are available on [Docker Hub](https://hub.docker.com/r/angelicadvocate/angels-tv-animator).**
 
-1. **Clone this repository:**
-   ```bash
-   git clone https://github.com/angelicadvocate/Angels-TV-Animator.git
-   cd Angels-TV-Animator
-   ```
+**Pull and run with a single command:**
 
-2. **Build and start the container:**
-   ```bash
-   docker compose up -d --build
-   ```
+```bash
+docker run -d \
+  -p 8080:8080 \
+  -p 8081:8081 \
+  -v ata-data:/app/data \
+  -v ata-animations:/app/animations \
+  -v ata-videos:/app/videos \
+  --name angels-tv-animator \
+  --restart unless-stopped \
+  angelicadvocate/angels-tv-animator:latest
+```
+
+Or use **Docker Compose** by following the [`docker-compose.yml`](./docker-compose.yml) template included in this repo, then run:
+
+```bash
+docker compose up -d
+```
+
+### Building from Source (Optional)
+
+If you prefer to build locally instead of pulling from Docker Hub:
+
+```bash
+git clone https://github.com/angelicadvocate/Angels-TV-Animator.git
+cd Angels-TV-Animator
+docker compose up -d --build
+```
 
    > 📡 **Port Note:** This application uses **internal Docker ports 8080 and 8081** by default:
    > - Port **8080**: Main web interface, admin panel, and Socket.IO  

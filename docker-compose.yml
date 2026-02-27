@@ -15,13 +15,15 @@ version: '3.8'
 
 services:
   angels-tv-animator:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: angelicadvocate/angels-tv-animator:latest
+    # To pin a specific version instead of latest, use:
+    #   image: angelicadvocate/angels-tv-animator:v0.9.7
+    # To build from source instead of pulling from Docker Hub, replace 'image' with:
+    #   build:
+    #     context: .
+    #     dockerfile: Dockerfile
     container_name: angels-tv-animator
     restart: unless-stopped
-    labels:
-      - "version=0.9.5"
     ports:
       - "8080:8080"  # Main application (external:internal port mapping)
       - "8081:8081"  # Streamerbot WebSocket (external:internal port mapping)
