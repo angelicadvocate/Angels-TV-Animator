@@ -72,3 +72,14 @@
   - Now Playing component: embed or SocketIO integration with Angels-Now-Playing data
   - Could use the same iframe-over-gradient pattern as donation/follower/goal pages, or a native SocketIO integration for tighter control
   - **Priority**: Low — depends on Angels-Now-Playing project reaching a stable state first
+
+- [ ] **Photo Slideshow Mode**
+  - Create `slideshow.html` animation template
+  - Allow image upload/management in Admin UI (album-style grouping)
+  - Auto-rotate images (JPG, PNG, WebP, optional GIF)
+  - Configurable slide duration and transition type (fade/slide)
+  - Optional shuffle + loop mode
+  - Usable as a manually triggered animation or default idle screen
+  - Basic image optimization on upload (resize/compress if needed)
+  - **Priority**: Low — expands into ambient display / digital signage use cases
+
